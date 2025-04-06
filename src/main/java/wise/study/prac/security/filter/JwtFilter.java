@@ -1,0 +1,55 @@
+package wise.study.prac.security.filter;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.filter.OncePerRequestFilter;
+import wise.study.prac.security.token.JwtAuthToken;
+
+//@Component
+@RequiredArgsConstructor
+public class JwtFilter extends OncePerRequestFilter {
+
+  //  private final AuthenticationService authenticationService;
+  private final AuthenticationManager authenticationManager;
+
+  @Override
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
+      FilterChain filterChain) throws ServletException, IOException {
+
+    System.out.println("JwtFilter 호출!!!");
+
+    boolean isRefresh = isRefreshToken(request);
+    String jwt = request.getHeader("Authorization");
+
+    try {
+      var authentication = authenticationManager.authenticate(
+          new JwtAuthToken(isRefresh, jwt));
+
+      SecurityContextHolder.getContext().setAuthentication(authentication);
+    } catch (ExpiredJwtException eje) {
+      response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+    }
+
+    filterChain.doFilter(request, response);
+  }
+
+  @Override
+  protected boolean shouldNotFilter(HttpServletRequest request) throws ServletException {
+//    return request.getServletPath().equals(AuthUri.ISSUE_JWT_URI.getUri());
+    return request.getServletPath().equals("/api/auth/login") ||
+        request.getServletPath().equals("/api/auth/otp");
+  }
+
+  private boolean isRefreshToken(HttpServletRequest request) {
+    return request.getServletPath().equals("/api/auth/jwt") &&
+        request.getMethod().equals(HttpMethod.GET.name());
+  }
+}
