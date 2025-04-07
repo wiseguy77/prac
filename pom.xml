@@ -30,6 +30,71 @@
   <properties>
     <java.version>17</java.version>
   </properties>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <!-- Annotation Processing -->
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <annotationProcessorPaths>
+            <path>
+              <artifactId>querydsl-apt</artifactId>
+              <classifier>jpa</classifier>
+              <groupId>io.github.openfeign.querydsl</groupId>
+              <version>6.11</version>
+            </path>
+            <path>
+              <artifactId>lombok</artifactId>
+              <groupId>org.projectlombok</groupId>
+              <version>1.18.38</version>
+            </path>
+            <path>
+              <artifactId>jakarta.persistence-api</artifactId>
+              <groupId>jakarta.persistence</groupId>
+              <version>3.1.0</version>
+            </path>
+          </annotationProcessorPaths>
+          <compilerArgs>
+            <!--            <arg>-processor</arg>-->
+            <!--            <arg>com.querydsl.apt.jpa.JPAAnnotationProcessor</arg>-->
+            <arg>-AQuerydsl.generatedAnnotationClass=jakarta.annotation.Generated</arg>
+          </compilerArgs>
+          <generatedSourcesDirectory>${project.build.directory}/generated-sources/querydsl
+          </generatedSourcesDirectory>
+          <source>17</source>
+          <target>17</target>
+        </configuration>
+        <groupId>org.apache.maven.plugins</groupId>
+        <version>3.11.0</version>
+      </plugin>
+
+      <!-- generated-sources 포함 -->
+      <plugin>
+        <artifactId>build-helper-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <configuration>
+              <sources>
+                <source>${project.build.directory}/generated-sources/querydsl</source>
+              </sources>
+            </configuration>
+            <goals>
+              <goal>add-source</goal>
+            </goals>
+            <id>add-source</id>
+            <phase>generate-sources</phase>
+          </execution>
+        </executions>
+        <groupId>org.codehaus.mojo</groupId>
+        <version>3.2.0</version>
+      </plugin>
+    </plugins>
+  </build>
+
   <dependencies>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -38,7 +103,6 @@
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-data-jpa</artifactId>
-      <version>3.4.4</version>
     </dependency>
     <dependency>
       <groupId>org.springframework.boot</groupId>
@@ -103,6 +167,30 @@
       <version>0.12.6</version>
       <scope>runtime</scope>
     </dependency>
+    <!-- querydsl -->
+    <dependency>
+      <artifactId>querydsl-jpa</artifactId>
+      <groupId>io.github.openfeign.querydsl</groupId>
+      <version>6.11</version>
+    </dependency>
+    <dependency>
+      <artifactId>jakarta.inject-api</artifactId>
+      <groupId>jakarta.inject</groupId>
+      <version>2.0.1</version>
+    </dependency>
+    <!-- Annotation Processor -->
+    <dependency>
+      <artifactId>querydsl-apt</artifactId>
+      <classifier>jpa</classifier>
+      <groupId>io.github.openfeign.querydsl</groupId>
+      <scope>provided</scope>
+      <version>6.11</version>
+    </dependency>
+    <!--    <dependency>-->
+    <!--      <groupId>io.github.openfeign.querydsl</groupId>-->
+    <!--      <artifactId>querydsl-apt</artifactId>-->
+    <!--      <version>6.11</version>-->
+    <!--    </dependency>-->
     <!-- JUnit5 -->
     <dependency>
       <groupId>org.junit.jupiter</groupId>
@@ -117,14 +205,4 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-      <plugin>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-maven-plugin</artifactId>
-      </plugin>
-    </plugins>
-  </build>
-
 </project>
