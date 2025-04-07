@@ -1,10 +1,11 @@
 package wise.study.prac.service;
 
+import static wise.study.prac.exception.ErrorCode.USER_NOT_FOUND;
+
 import io.jsonwebtoken.Claims;
 import java.time.LocalDateTime;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -15,10 +16,11 @@ import org.springframework.util.StringUtils;
 import wise.study.prac.dto.IssuedJwtResponse;
 import wise.study.prac.dto.IssuedOtpResponse;
 import wise.study.prac.dto.MfaRequest;
-import wise.study.prac.repository.MemberRepository;
-import wise.study.prac.util.JwtUtil;
 import wise.study.prac.entity.Member;
+import wise.study.prac.exception.PracException;
+import wise.study.prac.repository.MemberRepository;
 import wise.study.prac.security.OtpClientProxy;
+import wise.study.prac.util.JwtUtil;
 
 @Service
 @RequiredArgsConstructor
@@ -70,7 +72,6 @@ public class AuthenticationService {
     Member member = memberRepository.findMemberByAccount(account)
         .orElseThrow(() -> new UsernameNotFoundException("인증 실패"));
 
-
     if (!StringUtils.hasText(member.getSecretKey())) {
       member.setSecretKey(UUID.randomUUID().toString());
     }
@@ -86,17 +87,17 @@ public class AuthenticationService {
         .build();
   }
 
-  public Claims validateAccessToken(String jwt) throws NotFoundException {
+  public Claims validateAccessToken(String jwt) {
 
     Member member = memberRepository.findMemberByAccessToken(jwt)
-        .orElseThrow(NotFoundException::new);
+        .orElseThrow(() -> new PracException(USER_NOT_FOUND));
 
     return jwtUtil.validateToken(jwt, member.getSecretKey());
   }
 
-  public Claims validateRefreshToken(String jwt) throws NotFoundException {
+  public Claims validateRefreshToken(String jwt) {
     Member member = memberRepository.findMemberByRefreshToken(jwt)
-        .orElseThrow(NotFoundException::new);
+        .orElseThrow(() -> new PracException(USER_NOT_FOUND));
 
     return jwtUtil.validateToken(jwt, member.getSecretKey());
   }

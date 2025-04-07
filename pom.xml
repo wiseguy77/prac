@@ -79,12 +79,12 @@
       <artifactId>commons-io</artifactId>
       <version>2.18.0</version>
     </dependency>
-    <!-- HttpClient -->
-<!--    <dependency>-->
-<!--      <groupId>org.apache.httpcomponents</groupId>-->
-<!--      <artifactId>httpclient</artifactId>-->
-<!--      <version>4.5.14</version>-->
-<!--    </dependency>-->
+    <!-- Java 8 date/time type `java.time.LocalDateTime` not supported by default -->
+    <dependency>
+      <artifactId>jackson-datatype-jsr310</artifactId>
+      <groupId>com.fasterxml.jackson.datatype</groupId>
+      <version>2.18.3</version>
+    </dependency>
     <!-- jwt   -->
     <dependency>
       <groupId>io.jsonwebtoken</groupId>

@@ -14,13 +14,14 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import wise.study.prac.security.filter.JwtFilter;
 import wise.study.prac.security.filter.LogInFilter;
 import wise.study.prac.security.filter.OtpFilter;
+import wise.study.prac.security.handler.CustomAccessDeniedHandler;
+import wise.study.prac.security.handler.CustomAuthenticationEntryPoint;
 import wise.study.prac.security.provider.JwtAuthProvider;
-import wise.study.prac.security.provider.OtpAuthProvider;
 import wise.study.prac.security.provider.LogInAuthProvider;
+import wise.study.prac.security.provider.OtpAuthProvider;
 
 @Configuration
 @RequiredArgsConstructor
@@ -30,6 +31,8 @@ public class SecurityConfig {
   private final OtpAuthProvider otpAuthProvider;
   private final LogInAuthProvider logInAuthProvider;
   private final JwtAuthProvider jwtAuthProvider;
+  private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+  private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
   @Bean
   public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -45,11 +48,15 @@ public class SecurityConfig {
         .csrf(AbstractHttpConfigurer::disable) // SSR 방식이면 활성화
         .cors(AbstractHttpConfigurer::disable)
         .formLogin(AbstractHttpConfigurer::disable)
+        .exceptionHandling(eh -> eh
+            .authenticationEntryPoint(customAuthenticationEntryPoint)
+            .accessDeniedHandler(customAccessDeniedHandler))
         .addFilterBefore(new LogInFilter(authenticationManager),
             UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(new OtpFilter(authenticationManager),
             UsernamePasswordAuthenticationFilter.class)
-        .addFilterAfter(new JwtFilter(authenticationManager), BasicAuthenticationFilter.class)
+        .addFilterBefore(new JwtFilter(authenticationManager, customAuthenticationEntryPoint),
+            UsernamePasswordAuthenticationFilter.class)
         .authorizeHttpRequests(request -> request
             // 6.0부터 forward 에도 인증이 기본으로 변경되었기 때문에 예전처럼 동작하려면 설정 필요
             .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
@@ -58,6 +65,7 @@ public class SecurityConfig {
             .requestMatchers("/api/member/all").hasAuthority("ADMIN")
             .anyRequest().authenticated());
 
+
     return http.build();
   }
 
@@ -65,7 +73,7 @@ public class SecurityConfig {
   public WebSecurityCustomizer webSecurityCustomizer() {
     return (web) -> web.ignoring()
         .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-        .requestMatchers("/test", "/")
+        .requestMatchers("/test", "/", "/api/misc/status")
         .requestMatchers(HttpMethod.POST, "/api/member");
   }
 

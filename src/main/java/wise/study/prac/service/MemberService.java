@@ -6,11 +6,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import wise.study.prac.dto.MemberInfoAllResponse;
-import wise.study.prac.dto.MemberInfoRequest;
 import wise.study.prac.dto.MemberInfoResponse;
 import wise.study.prac.dto.RegisterMemberRequest;
-import wise.study.prac.repository.MemberRepository;
 import wise.study.prac.entity.Member;
+import wise.study.prac.repository.MemberRepository;
 
 @Service
 @RequiredArgsConstructor
@@ -34,8 +33,8 @@ public class MemberService {
     memberRepository.save(newMember);
   }
 
-  public MemberInfoResponse getMemberInfo(MemberInfoRequest request) throws NotFoundException {
-    Member member = memberRepository.findMemberByAccount(request.getAccount())
+  public MemberInfoResponse getMemberInfo(String account) throws NotFoundException {
+    Member member = memberRepository.findMemberByAccount(account)
         .orElseThrow(NotFoundException::new);
 
     return new MemberInfoResponse(member);
