@@ -1,5 +1,7 @@
 package wise.study.prac.security.config;
 
+import static wise.study.prac.security.enums.RoleType.ADMIN;
+
 import jakarta.servlet.DispatcherType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
@@ -62,7 +64,7 @@ public class SecurityConfig {
             .dispatcherTypeMatchers(DispatcherType.FORWARD).permitAll()
             .requestMatchers("/api/auth/otp"/*, "/api/member", "/api/misc/status"*/)
             .permitAll()
-            .requestMatchers("/api/member/all").hasAuthority("ADMIN")
+            .requestMatchers("/api/member/all").hasAuthority(ADMIN.getAuthority())
             .anyRequest().authenticated());
 
 
