@@ -11,8 +11,9 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import wise.study.prac.dto.CommonResponse;
-import wise.study.prac.exception.ErrorCode;
+import wise.study.prac.mvc.dto.CommonResponse;
+import wise.study.prac.mvc.exception.ErrorCode;
+import wise.study.prac.security.exception.PracAuthenticationException;
 
 @Component
 @RequiredArgsConstructor
@@ -24,11 +25,21 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
   public void commence(HttpServletRequest request, HttpServletResponse response,
       AuthenticationException authException) throws IOException {
 
-    response.setStatus(HttpStatus.UNAUTHORIZED.value());
+    // 기본 값
+    ErrorCode errorCode = ErrorCode.UNAUTHORIZED;
+    int status = HttpStatus.UNAUTHORIZED.value();
+
+    // PracAuthenticationException 일 경우 내부 errorCode 사용
+    if (authException instanceof PracAuthenticationException pracEx) {
+      errorCode = pracEx.getErrorCode();
+      status = pracEx.getHttpStatus().value();
+    }
+
+    response.setStatus(status);
     response.setContentType(MediaType.APPLICATION_JSON_VALUE);
     response.setCharacterEncoding(StandardCharsets.UTF_8.name());
 
-    CommonResponse<?> error = CommonResponse.fail(ErrorCode.UNAUTHORIZED);
+    CommonResponse<?> error = CommonResponse.fail(errorCode);
     response.getWriter().write(objectMapper.writeValueAsString(error));
   }
 }

@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import wise.study.prac.dto.MfaRequest;
+import wise.study.prac.mvc.dto.MfaRequest;
 import wise.study.prac.security.token.OtpAuthToken;
 import wise.study.prac.security.wrapper.RequestWrapper;
 

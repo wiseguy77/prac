@@ -1,17 +1,22 @@
 package wise.study.prac.security.filter;
 
+import static wise.study.prac.mvc.exception.ErrorCode.JWT_EXPIRED;
+import static wise.study.prac.mvc.exception.ErrorCode.JWT_INVALID;
+import static wise.study.prac.mvc.exception.ErrorCode.UNAUTHORIZED;
+
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.InvalidClaimException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import wise.study.prac.security.enums.JwtTokenType;
+import wise.study.prac.mvc.exception.PracException;
+import wise.study.prac.security.exception.PracAuthenticationException;
 import wise.study.prac.security.handler.CustomAuthenticationEntryPoint;
 import wise.study.prac.security.token.JwtAuthToken;
 
@@ -25,21 +30,23 @@ public class JwtFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
       FilterChain filterChain) throws ServletException, IOException {
 
-    HttpMethod httpMethod = HttpMethod.valueOf(request.getMethod());
-    String path = request.getServletPath();
-    JwtTokenType jwtTokenType = JwtTokenType.findExpectedTokenType(httpMethod, path);
-    String jwt = request.getHeader("Authorization");
+    String access = request.getHeader("Authorization");
+    String refresh = request.getHeader("Refresh-Token");
 
     try {
-      var authentication = authenticationManager.authenticate(
-          new JwtAuthToken(jwtTokenType, null, jwt));
+      var authentication = authenticationManager.authenticate(new JwtAuthToken(access, refresh));
 
       SecurityContextHolder.getContext().setAuthentication(authentication);
 
       filterChain.doFilter(request, response);
+    } catch (ExpiredJwtException e) {
+      throw new PracAuthenticationException(JWT_EXPIRED);
+    } catch (InvalidClaimException e) {
+      throw new PracAuthenticationException(JWT_INVALID);
+    } catch (PracException e) {
+      throw new PracAuthenticationException(e);
     } catch (Exception e) {
-      customAuthenticationEntryPoint.commence(request, response,
-          new InsufficientAuthenticationException(e.getMessage(), e));
+      throw new PracAuthenticationException(UNAUTHORIZED, e);
     }
   }
 

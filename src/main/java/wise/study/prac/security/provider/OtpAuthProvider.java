@@ -1,15 +1,13 @@
 package wise.study.prac.security.provider;
 
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-import wise.study.prac.security.form.CustomUserDetails;
+import wise.study.prac.security.form.CustomUserDetailsImpl;
 import wise.study.prac.security.token.OtpAuthToken;
 
 @Component
@@ -24,12 +22,10 @@ public class OtpAuthProvider implements AuthenticationProvider {
     String account = authentication.getName();
     String otpCode = authentication.getCredentials().toString();
 
-    var userDetails = (CustomUserDetails) userDetailsService.loadUserByUsername(account);
+    var userDetails = (CustomUserDetailsImpl) userDetailsService.loadUserByUsername(account);
     validateOtpCode(userDetails, otpCode);
 
-    var authority = new SimpleGrantedAuthority(userDetails.getRole().name());
-
-    return new OtpAuthToken(userDetails, otpCode, List.of(authority));
+    return new OtpAuthToken(userDetails, otpCode, userDetails.getAuthorities());
   }
 
   @Override
@@ -37,7 +33,7 @@ public class OtpAuthProvider implements AuthenticationProvider {
     return OtpAuthToken.class.isAssignableFrom(authentication);
   }
 
-  private void validateOtpCode(CustomUserDetails userDetails, String otpCode) {
+  private void validateOtpCode(CustomUserDetailsImpl userDetails, String otpCode) {
 
     if (!userDetails.hasValidOtpCode() || !(userDetails.getOtpCode().equals(otpCode))) {
       throw new BadCredentialsException("인증 실패");

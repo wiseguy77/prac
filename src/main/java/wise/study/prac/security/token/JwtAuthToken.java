@@ -1,26 +1,30 @@
 package wise.study.prac.security.token;
 
 import java.util.Collection;
+import lombok.Getter;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import wise.study.prac.security.enums.JwtTokenType;
 
+@Getter
 public class JwtAuthToken extends UsernamePasswordAuthenticationToken {
 
-  private final JwtTokenType jwtTokenType;
+  private final String accessToken;
+  private final String refreshToken;
 
-  public JwtAuthToken(JwtTokenType jwtTokenType, Object principal, Object credentials) {
-    super(principal, credentials);
-    this.jwtTokenType = jwtTokenType;
+  public JwtAuthToken(String access, String refresh) {
+    super(null, null, null);
+    this.accessToken = access;
+    this.refreshToken = refresh;
   }
 
-  public JwtAuthToken(JwtTokenType jwtTokenType, Object principal, Object credentials,
+  public JwtAuthToken(String access, String refresh, Object principal,
       Collection<? extends GrantedAuthority> authorities) {
-    super(principal, credentials, authorities);
-    this.jwtTokenType = jwtTokenType;
+    super(principal, null, authorities);
+    this.accessToken = access;
+    this.refreshToken = refresh;
   }
 
-  public JwtTokenType getJwtTokenType() {
-    return jwtTokenType;
+  public boolean hasRefreshToken() {
+    return this.refreshToken != null;
   }
 }
