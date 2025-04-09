@@ -8,7 +8,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import wise.study.prac.security.token.LogInAuthToken;
@@ -18,7 +17,7 @@ import wise.study.prac.security.token.LogInAuthToken;
 public class LogInAuthProvider implements AuthenticationProvider {
 
   private final UserDetailsService userDetailsService;
-  private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+  private final PasswordEncoder passwordEncoder;
 
   @Override
   public Authentication authenticate(Authentication authentication) throws AuthenticationException {

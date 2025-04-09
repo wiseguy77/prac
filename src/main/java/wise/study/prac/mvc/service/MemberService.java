@@ -7,7 +7,6 @@ import static wise.study.prac.mvc.exception.ErrorCode.REGISTER_MEMBER_FAIL;
 import java.security.NoSuchAlgorithmException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,7 +23,7 @@ import wise.study.prac.security.jwt.JwtUtil;
 public class MemberService {
 
   private final MemberRepository memberRepository;
-  private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+  private final PasswordEncoder passwordEncoder;
   private final JwtUtil jwtUtil;
 
   @Transactional

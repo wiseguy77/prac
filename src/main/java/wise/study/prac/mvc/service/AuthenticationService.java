@@ -5,14 +5,12 @@ import static wise.study.prac.mvc.exception.ErrorCode.UNAUTHORIZED;
 import static wise.study.prac.mvc.exception.ErrorCode.USER_INACTIVE_STATUS;
 import static wise.study.prac.mvc.exception.ErrorCode.USER_NOT_FOUND;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.time.Duration;
 import java.time.LocalDateTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,11 +34,10 @@ import wise.study.prac.security.token.JwtAuthToken;
 public class AuthenticationService {
 
   private final MemberRepository memberRepository;
-  private final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+  private final PasswordEncoder passwordEncoder;
   private final JwtUtil jwtUtil;
   private final OtpClientProxy otpClient;
   private final JwtRepository jwtRepository;
-  private final ObjectMapper objectMapper;
 
   private final long accessTtl = Duration.ofMinutes(10).toMillis();
   private final long refreshTtl = Duration.ofDays(7).toMillis();
