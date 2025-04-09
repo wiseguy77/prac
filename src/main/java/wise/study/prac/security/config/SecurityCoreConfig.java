@@ -28,7 +28,7 @@ import wise.study.prac.security.provider.OtpAuthProvider;
 @Configuration
 @RequiredArgsConstructor
 @EnableWebSecurity(/*debug = true*/)
-public class SecurityConfig {
+public class SecurityCoreConfig {
 
   private final OtpAuthProvider otpAuthProvider;
   private final LogInAuthProvider logInAuthProvider;
@@ -66,7 +66,6 @@ public class SecurityConfig {
             .permitAll()
             .requestMatchers("/api/member/all").hasAuthority(ADMIN.getAuthority())
             .anyRequest().authenticated());
-
 
     return http.build();
   }
