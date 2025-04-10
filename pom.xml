@@ -188,6 +188,12 @@
       <artifactId>embedded-redis</artifactId>
       <groupId>it.ozimov</groupId>
       <version>0.7.3</version>
+      <exclusions>
+        <exclusion>
+          <artifactId>slf4j-simple</artifactId>
+          <groupId>org.slf4j</groupId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <artifactId>commons-codec</artifactId>
