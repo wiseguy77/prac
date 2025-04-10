@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+  <!-- 콘솔 출력 설정 -->
+  <appender class="ch.qos.logback.core.ConsoleAppender" name="CONSOLE">
+    <encoder>
+      <!--      <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>-->
+      <pattern>%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5level) [%thread] %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!-- 파일 출력 설정 -->
+  <appender class="ch.qos.logback.core.FileAppender" name="FILE">
+    <encoder>
+      <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>
+    </encoder>
+    <file>logs/application.log</file>
+  </appender>
+
+  <!-- 로그 레벨 설정 -->
+  <logger additivity="false" level="INFO" name="wise.study.prac">
+    <appender-ref ref="CONSOLE"/>
+  </logger>
+
+  <!-- 특정 패키지의 로그 레벨 설정 -->
+  <root level="WARN">
+    <appender-ref ref="CONSOLE"/>
+    <!--    <appender-ref ref="FILE" />-->
+  </root>
+
+</configuration>
