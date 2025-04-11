@@ -18,6 +18,8 @@ public enum ErrorCode {
   UNAUTHORIZED("UNAUTHORIZED", "인증에 실패했습니다.", HttpStatus.UNAUTHORIZED),
   ACCESS_DENIED("ACCESS_DENIED", "접근 권한이 없습니다.", HttpStatus.FORBIDDEN),
   JSON_CONVERT("JSON_CONVERT_ERROR", "JSON (역)직렬화에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+  READ_REQUEST_BODY_FAIL("READ_REQUEST_BODY_FAIL", "사용자 요청 객체 정보를 얻는데 실패했습니다.",
+      HttpStatus.INTERNAL_SERVER_ERROR),
   INTERNAL_SERVER_ERROR("INTERNAL_ERROR", "서버 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 
   private final String code;
