@@ -1,15 +1,17 @@
 package wise.study.prac.security.provider;
 
+import static wise.study.prac.mvc.exception.ErrorCode.UNAUTHORIZED;
+
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import wise.study.prac.security.exception.PracAuthenticationException;
 import wise.study.prac.security.token.LogInAuthToken;
 
 @Component
@@ -30,7 +32,7 @@ public class LogInAuthProvider implements AuthenticationProvider {
     if (comparePassword(password, userDetails.getPassword())) {
       return new LogInAuthToken(userDetails, password, List.of());
     } else {
-      throw new BadCredentialsException("인증 실패");
+      throw new PracAuthenticationException(UNAUTHORIZED);
     }
   }
 

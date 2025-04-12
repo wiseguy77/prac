@@ -5,7 +5,10 @@
   <appender class="ch.qos.logback.core.ConsoleAppender" name="CONSOLE">
     <encoder>
       <!--      <pattern>%d{yyyy-MM-dd HH:mm:ss} - %msg%n</pattern>-->
-      <pattern>%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5level) [%thread] %logger{36} - %msg%n</pattern>
+      <!-- <pattern>%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5level) [%thread] %logger{36} - %msg%n</pattern>-->
+      >
+      <pattern>%d{yyyy-MM-dd HH:mm:ss} %highlight(%-5level) %logger{36} %X{requestIp} - %msg%n
+      </pattern>
     </encoder>
   </appender>
 
@@ -18,14 +21,14 @@
   </appender>
 
   <!-- 로그 레벨 설정 -->
-  <logger additivity="false" level="INFO" name="wise.study.prac">
-    <appender-ref ref="CONSOLE"/>
-  </logger>
-
-  <!-- 특정 패키지의 로그 레벨 설정 -->
   <root level="WARN">
     <appender-ref ref="CONSOLE"/>
     <!--    <appender-ref ref="FILE" />-->
   </root>
+
+  <!-- 특정 패키지의 로그 레벨 설정 -->
+  <logger additivity="false" level="INFO" name="wise.study.prac">
+    <appender-ref ref="CONSOLE"/>
+  </logger>
 
 </configuration>

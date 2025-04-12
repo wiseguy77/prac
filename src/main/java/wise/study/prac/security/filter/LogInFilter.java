@@ -7,12 +7,16 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.MDC;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
+import wise.study.prac.mvc.enums.MdcKeys;
 import wise.study.prac.security.token.LogInAuthToken;
 import wise.study.prac.security.wrapper.RequestWrapper;
 
+@Slf4j
 @RequiredArgsConstructor
 public class LogInFilter extends OncePerRequestFilter {
 
@@ -31,6 +35,8 @@ public class LogInFilter extends OncePerRequestFilter {
 
     var authentication = authenticationManager.authenticate(new LogInAuthToken(account, password));
     SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    MDC.put(MdcKeys.ACCOUNT.getMdcKey(), account);
 
     filterChain.doFilter(wrapper, response);
   }
