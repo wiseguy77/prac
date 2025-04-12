@@ -15,7 +15,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import wise.study.prac.security.filter.CleanUpFilter;
 import wise.study.prac.security.filter.JwtFilter;
 import wise.study.prac.security.filter.LogInFilter;
 import wise.study.prac.security.filter.OtpFilter;
@@ -53,6 +55,7 @@ public class SecurityCoreConfig {
         .exceptionHandling(eh -> eh
             .authenticationEntryPoint(customAuthenticationEntryPoint)
             .accessDeniedHandler(customAccessDeniedHandler))
+        .addFilterBefore(new CleanUpFilter(), ChannelProcessingFilter.class)
         .addFilterBefore(new LogInFilter(authenticationManager),
             UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(new OtpFilter(authenticationManager),
