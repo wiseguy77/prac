@@ -57,7 +57,7 @@ public class SecurityCoreConfig {
             UsernamePasswordAuthenticationFilter.class)
         .addFilterAfter(new OtpFilter(authenticationManager),
             UsernamePasswordAuthenticationFilter.class)
-        .addFilterBefore(new JwtFilter(authenticationManager, customAuthenticationEntryPoint),
+        .addFilterBefore(new JwtFilter(authenticationManager),
             UsernamePasswordAuthenticationFilter.class)
         .authorizeHttpRequests(request -> request
             // 6.0부터 forward 에도 인증이 기본으로 변경되었기 때문에 예전처럼 동작하려면 설정 필요

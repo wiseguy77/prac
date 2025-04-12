@@ -17,14 +17,12 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import wise.study.prac.mvc.exception.PracException;
 import wise.study.prac.security.exception.PracAuthenticationException;
-import wise.study.prac.security.handler.CustomAuthenticationEntryPoint;
 import wise.study.prac.security.token.JwtAuthToken;
 
 @RequiredArgsConstructor
 public class JwtFilter extends OncePerRequestFilter {
 
   private final AuthenticationManager authenticationManager;
-  private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
   @Override
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response,
