@@ -39,7 +39,7 @@ public class AuthenticationService {
   private final OtpClientProxy otpClient;
   private final JwtRepository jwtRepository;
 
-  private final long accessTtl = Duration.ofMinutes(10).toMillis();
+  private final long accessTtl = Duration.ofMinutes(60).toMillis();
   private final long refreshTtl = Duration.ofDays(7).toMillis();
 
   @Transactional
