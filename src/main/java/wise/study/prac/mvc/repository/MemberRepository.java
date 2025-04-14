@@ -6,10 +6,7 @@ import org.springframework.stereotype.Repository;
 import wise.study.prac.mvc.entity.Member;
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
-  Optional<Member> findMemberById(Long id);
   Optional<Member> findMemberByAccount(String account);
-  Optional<Member> findMemberByAccessToken(String accessToken);
-  Optional<Member> findMemberByRefreshToken(String refreshToken);
 }

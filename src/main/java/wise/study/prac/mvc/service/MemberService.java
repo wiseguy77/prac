@@ -12,10 +12,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import wise.study.prac.mvc.dto.MemberInfoAllResponse;
 import wise.study.prac.mvc.dto.MemberInfoResponse;
-import wise.study.prac.mvc.dto.RegisterMemberRequest;
 import wise.study.prac.mvc.entity.Member;
 import wise.study.prac.mvc.exception.PracException;
 import wise.study.prac.mvc.repository.MemberRepository;
+import wise.study.prac.mvc.service.params.RegisterMemberSvcParam;
 import wise.study.prac.security.jwt.JwtUtil;
 
 @Service
@@ -27,18 +27,18 @@ public class MemberService {
   private final JwtUtil jwtUtil;
 
   @Transactional
-  public void registerMember(RegisterMemberRequest request) {
+  public void registerMember(RegisterMemberSvcParam svcParam) {
 
     try {
       Member newMember = Member.builder()
-          .account(request.getAccount())
-          .password(passwordEncoder.encode(request.getPassword()))
+          .account(svcParam.getAccount())
+          .password(passwordEncoder.encode(svcParam.getPassword()))
           .secretKey(jwtUtil.generateSecretKey())
-          .name(request.getName())
-          .email(request.getEmail())
-          .mobileNumber(request.getMobileNumber())
-          .phoneNumber(request.getPhoneNumber())
-          .role(request.getRole())
+          .name(svcParam.getName())
+          .email(svcParam.getEmail())
+          .mobileNumber(svcParam.getMobileNumber())
+          .phoneNumber(svcParam.getPhoneNumber())
+          .role(svcParam.getRole())
           .build();
 
       memberRepository.save(newMember);
