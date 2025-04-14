@@ -20,6 +20,7 @@ public enum ErrorCode {
   JSON_CONVERT("JSON_CONVERT_ERROR", "JSON (역)직렬화에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
   READ_REQUEST_BODY_FAIL("READ_REQUEST_BODY_FAIL", "사용자 요청 객체 정보를 얻는데 실패했습니다.",
       HttpStatus.INTERNAL_SERVER_ERROR),
+  NO_RESOURCE_FOUND("NO_RESOURCE_FOUND", "요청한 경로를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
   INTERNAL_SERVER_ERROR("INTERNAL_ERROR", "서버 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR);
 
   private final String code;
