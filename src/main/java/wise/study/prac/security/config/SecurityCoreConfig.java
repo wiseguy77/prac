@@ -77,7 +77,8 @@ public class SecurityCoreConfig {
   public WebSecurityCustomizer webSecurityCustomizer() {
     return (web) -> web.ignoring()
         .requestMatchers(PathRequest.toStaticResources().atCommonLocations())
-        .requestMatchers("/test", "/", "/api/misc/status")
+        .requestMatchers("/test", "/", "/api/misc/**")
+        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**", "/swagger-ui.html")
         .requestMatchers(HttpMethod.POST, "/api/member");
   }
 

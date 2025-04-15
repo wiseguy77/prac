@@ -9,6 +9,8 @@ import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import wise.study.prac.mvc.dto.CommonResponse;
 
@@ -21,7 +23,13 @@ public class GlobalResponseAdvice implements ResponseBodyAdvice<Object> {
   @Override
   public boolean supports(MethodParameter returnType,
       Class<? extends HttpMessageConverter<?>> converterType) {
-    return true;
+
+    String path = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes())
+        .getRequest().getRequestURI();
+
+    return !path.startsWith("/v3/api-docs") &&
+        !path.startsWith("/swagger") &&
+        !path.startsWith("/swagger-ui");
   }
 
   @Override
