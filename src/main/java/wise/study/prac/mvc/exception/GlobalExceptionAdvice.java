@@ -1,5 +1,6 @@
 package wise.study.prac.mvc.exception;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,7 +34,14 @@ public class GlobalExceptionAdvice {
   }
 
   @ExceptionHandler(Exception.class)
-  public ResponseEntity<CommonResponse<?>> handleGenericException(Exception e) {
+  public ResponseEntity<CommonResponse<?>> handleGenericException(Exception e,
+      HttpServletRequest request) {
+
+    if (request.getRequestURI().startsWith("/v3/api-docs") ||
+        request.getRequestURI().startsWith("/swagger") ||
+        request.getRequestURI().startsWith("/swagger-ui")) {
+      return null; // Spring 기본 처리로 넘기기
+    }
 
     log.error(e.getMessage(), e);
     return ResponseEntity
