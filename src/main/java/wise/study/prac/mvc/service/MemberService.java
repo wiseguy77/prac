@@ -3,18 +3,20 @@ package wise.study.prac.mvc.service;
 import static wise.study.prac.mvc.exception.ErrorCode.KEY_GENERATION_FAIL;
 import static wise.study.prac.mvc.exception.ErrorCode.PASSWORD_ENCRYPTION_FAIL;
 import static wise.study.prac.mvc.exception.ErrorCode.REGISTER_MEMBER_FAIL;
+import static wise.study.prac.mvc.exception.ErrorCode.USER_NOT_FOUND;
 
 import java.security.NoSuchAlgorithmException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.crossstore.ChangeSetPersister.NotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wise.study.prac.mvc.dto.MemberInfoAllResponse;
-import wise.study.prac.mvc.dto.MemberInfoResponse;
+import wise.study.prac.mvc.dto.MemberAllResponse;
+import wise.study.prac.mvc.dto.MemberResponse;
+import wise.study.prac.mvc.dto.MemberTeamResponse;
 import wise.study.prac.mvc.entity.Member;
 import wise.study.prac.mvc.exception.PracException;
 import wise.study.prac.mvc.repository.MemberRepository;
+import wise.study.prac.mvc.service.params.MemberSvcParam;
 import wise.study.prac.mvc.service.params.RegisterMemberSvcParam;
 import wise.study.prac.security.jwt.JwtUtil;
 
@@ -51,14 +53,30 @@ public class MemberService {
     }
   }
 
-  public MemberInfoResponse getMemberInfo(String account) throws NotFoundException {
-    Member member = memberRepository.findMemberByAccount(account)
-        .orElseThrow(NotFoundException::new);
+  public MemberResponse getMemberById(int id) {
 
-    return new MemberInfoResponse(member);
+    Member member = memberRepository.findById(id)
+        .orElseThrow(() -> new PracException(USER_NOT_FOUND));
+
+    return new MemberResponse(member);
   }
 
-  public MemberInfoAllResponse getAllMemberInfo() {
-    return new MemberInfoAllResponse(memberRepository.findAll());
+  public MemberResponse getMemberInfo(MemberSvcParam param) {
+    Member member = memberRepository.findMemberByAccount(param.getAccount())
+        .orElseThrow(() -> new PracException(USER_NOT_FOUND));
+
+    return new MemberResponse(member);
+  }
+
+  public MemberTeamResponse getMemberTeamInfo(MemberSvcParam svcParam) {
+
+    Member member = memberRepository.findMemberTeam(svcParam)
+        .orElseThrow(() -> new PracException(USER_NOT_FOUND));
+
+    return new MemberTeamResponse(member);
+  }
+
+  public MemberAllResponse getAllMemberInfo() {
+    return new MemberAllResponse(memberRepository.findAll());
   }
 }
