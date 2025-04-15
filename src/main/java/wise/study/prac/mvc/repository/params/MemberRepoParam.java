@@ -1,6 +1,6 @@
 package wise.study.prac.mvc.repository.params;
 
-public interface MemberTeamRepoParam {
+public interface MemberRepoParam {
 
   String getAccount();
 
