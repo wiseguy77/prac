@@ -55,7 +55,6 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
     return jpaQuery.selectFrom(qMember)
         .where(where)
-        .fetchJoin()
         .fetch();
   }
 }

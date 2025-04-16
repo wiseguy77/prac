@@ -61,7 +61,7 @@
           <compilerArgs>
             <!--            <arg>-processor</arg>-->
             <!--            <arg>com.querydsl.apt.jpa.JPAAnnotationProcessor</arg>-->
-            <arg>-AQuerydsl.generatedAnnotationClass=jakarta.annotation.Generated</arg>
+            <!--            <arg>-AQuerydsl.generatedAnnotationClass=jakarta.annotation.Generated</arg>-->
           </compilerArgs>
           <generatedSourcesDirectory>${project.build.directory}/generated-sources/querydsl
           </generatedSourcesDirectory>

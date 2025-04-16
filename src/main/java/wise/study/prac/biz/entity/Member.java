@@ -58,6 +58,8 @@ public class Member implements JwtInfo {
   @ManyToOne
   @JoinColumn(name = "team_id")
   private Team team;
+
+  @Builder.Default
   @Enumerated(EnumType.STRING)
   private MemberStatus status = MemberStatus.ACTIVE;
 
