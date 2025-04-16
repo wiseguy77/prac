@@ -6,16 +6,18 @@ import static wise.study.prac.mvc.exception.ErrorCode.REGISTER_MEMBER_FAIL;
 import static wise.study.prac.mvc.exception.ErrorCode.USER_NOT_FOUND;
 
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wise.study.prac.mvc.dto.MemberAllResponse;
+import wise.study.prac.mvc.dto.MemberListResponse;
 import wise.study.prac.mvc.dto.MemberResponse;
 import wise.study.prac.mvc.dto.MemberTeamResponse;
 import wise.study.prac.mvc.entity.Member;
 import wise.study.prac.mvc.exception.PracException;
 import wise.study.prac.mvc.repository.MemberRepository;
+import wise.study.prac.mvc.service.params.MemberSvcFilterParam;
 import wise.study.prac.mvc.service.params.MemberSvcParam;
 import wise.study.prac.mvc.service.params.RegisterMemberSvcParam;
 import wise.study.prac.security.jwt.JwtUtil;
@@ -53,7 +55,7 @@ public class MemberService {
     }
   }
 
-  public MemberResponse getMemberById(int id) {
+  public MemberResponse getMemberById(long id) {
 
     Member member = memberRepository.findById(id)
         .orElseThrow(() -> new PracException(USER_NOT_FOUND));
@@ -68,15 +70,30 @@ public class MemberService {
     return new MemberResponse(member);
   }
 
-  public MemberTeamResponse getMemberTeamInfo(MemberSvcParam svcParam) {
+  public MemberListResponse filterMemberList(MemberSvcFilterParam param) {
 
-    Member member = memberRepository.findMemberTeam(svcParam)
+    List<Member> members = memberRepository.filterMemberList(param);
+
+    return new MemberListResponse(members);
+  }
+
+  public MemberTeamResponse getMemberTeam(MemberSvcParam param) {
+    Member member = memberRepository.findMemberByAccount(param.getAccount())
         .orElseThrow(() -> new PracException(USER_NOT_FOUND));
 
     return new MemberTeamResponse(member);
   }
 
-  public MemberAllResponse getAllMemberInfo() {
-    return new MemberAllResponse(memberRepository.findAll());
+  public List<MemberTeamResponse> getMemberTeamList(MemberSvcParam svcParam) {
+
+    List<Member> members = memberRepository.findMemberTeamList(svcParam);
+
+    return members.stream().map(MemberTeamResponse::new).toList();
   }
+
+  public MemberListResponse getAllMemberInfo() {
+    return new MemberListResponse(memberRepository.findAll());
+  }
+
+
 }

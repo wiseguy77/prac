@@ -1,17 +1,19 @@
 package wise.study.prac.mvc.repository;
 
-import static wise.study.prac.mvc.repository.predicate.MemberPredicate.accountEq;
-import static wise.study.prac.mvc.repository.predicate.MemberPredicate.emailEq;
-import static wise.study.prac.mvc.repository.predicate.MemberPredicate.nameEq;
+import static wise.study.prac.mvc.repository.conditions.MemberPredicate.accountEq;
+import static wise.study.prac.mvc.repository.conditions.MemberPredicate.emailEq;
+import static wise.study.prac.mvc.repository.conditions.MemberPredicate.nameEq;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import wise.study.prac.mvc.entity.Member;
 import wise.study.prac.mvc.entity.QMember;
 import wise.study.prac.mvc.entity.QTeam;
+import wise.study.prac.mvc.repository.conditions.GenericPredicateBuilder;
+import wise.study.prac.mvc.repository.params.MemberRepoFilterParam;
 import wise.study.prac.mvc.repository.params.MemberRepoParam;
 
 @RequiredArgsConstructor
@@ -19,14 +21,10 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
   private final JPAQueryFactory jpaQuery;
   private final QMember qMember = QMember.member;
+  private final GenericPredicateBuilder predicateBuilder;
 
   @Override
-  public List<Member> findMemberOne(MemberRepoParam param) {
-    return List.of();
-  }
-
-  @Override
-  public Optional<Member> findMemberTeam(MemberRepoParam repoParam) {
+  public List<Member> findMemberTeamList(MemberRepoParam repoParam) {
 
     QTeam team = new QTeam("team");
     BooleanBuilder where = new BooleanBuilder();
@@ -35,12 +33,29 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
         .and(nameEq(repoParam.getName()))
         .and(emailEq(repoParam.getEmail()));
 
-    Member member = jpaQuery.selectFrom(qMember)
+    return jpaQuery.selectFrom(qMember)
         .where(where)
         .leftJoin(qMember.team, team)
         .fetchJoin()
-        .fetchOne();
+        .fetch();
+  }
 
-    return Optional.ofNullable(member);
+  @Override
+  public List<Member> filterMemberList(MemberRepoFilterParam filterParam) {
+
+    BooleanBuilder where = new BooleanBuilder();
+
+    BooleanExpression account = predicateBuilder.build(qMember.account, filterParam.getAccount());
+    BooleanExpression name = predicateBuilder.build(qMember.name, filterParam.getName());
+    BooleanExpression email = predicateBuilder.build(qMember.email, filterParam.getEmail());
+
+    where.and(account)
+        .and(name)
+        .and(email);
+
+    return jpaQuery.selectFrom(qMember)
+        .where(where)
+        .fetchJoin()
+        .fetch();
   }
 }

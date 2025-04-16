@@ -8,6 +8,5 @@ import wise.study.prac.mvc.entity.Member;
 @Repository
 public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
-  Optional<Member> findById(int id);
   Optional<Member> findMemberByAccount(String account);
 }

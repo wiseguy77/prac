@@ -5,11 +5,11 @@ import lombok.Data;
 import wise.study.prac.mvc.entity.Member;
 
 @Data
-public class MemberAllResponse {
+public class MemberListResponse {
 
   List<MemberResponse> memberList;
 
-  public MemberAllResponse(List<Member> members) {
+  public MemberListResponse(List<Member> members) {
 
     memberList = members.stream().map(MemberResponse::new).toList();
   }
