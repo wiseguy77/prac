@@ -18,6 +18,7 @@ public enum ErrorCode {
   UNAUTHORIZED("UNAUTHORIZED", "인증에 실패했습니다.", HttpStatus.UNAUTHORIZED),
   ACCESS_DENIED("ACCESS_DENIED", "접근 권한이 없습니다.", HttpStatus.FORBIDDEN),
   JSON_CONVERT("JSON_CONVERT_ERROR", "JSON (역)직렬화에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+  ILLEGAL_ARGUMENTS("ILLEGAL_ARGUMENTS", "잘못된 요청 파라미터 보냈습니다.", HttpStatus.BAD_REQUEST),
   READ_REQUEST_BODY_FAIL("READ_REQUEST_BODY_FAIL", "사용자 요청 객체 정보를 얻는데 실패했습니다.",
       HttpStatus.INTERNAL_SERVER_ERROR),
   NO_RESOURCE_FOUND("NO_RESOURCE_FOUND", "요청한 경로를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
