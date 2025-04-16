@@ -1,6 +1,6 @@
 package wise.study.prac.security.filter;
 
-import static wise.study.prac.mvc.enums.MdcKeys.REQUEST_IP;
+import static wise.study.prac.biz.enums.MdcKeys.REQUEST_IP;
 
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

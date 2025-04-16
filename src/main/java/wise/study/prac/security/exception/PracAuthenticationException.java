@@ -3,8 +3,8 @@ package wise.study.prac.security.exception;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.AuthenticationException;
-import wise.study.prac.mvc.exception.ErrorCode;
-import wise.study.prac.mvc.exception.PracException;
+import wise.study.prac.biz.exception.ErrorCode;
+import wise.study.prac.biz.exception.PracException;
 
 @Getter
 public class PracAuthenticationException extends AuthenticationException {

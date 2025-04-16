@@ -8,7 +8,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-import wise.study.prac.mvc.service.AuthenticationService;
+import wise.study.prac.biz.service.AuthenticationService;
 import wise.study.prac.security.handler.CustomAuthenticationEntryPoint;
 import wise.study.prac.security.jwt.JwtUserDetails;
 import wise.study.prac.security.token.JwtAuthToken;

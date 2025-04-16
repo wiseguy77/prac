@@ -1,7 +1,7 @@
 package wise.study.prac.security.wrapper;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
-import static wise.study.prac.mvc.exception.ErrorCode.READ_REQUEST_BODY_FAIL;
+import static wise.study.prac.biz.exception.ErrorCode.READ_REQUEST_BODY_FAIL;
 
 import jakarta.servlet.ReadListener;
 import jakarta.servlet.ServletInputStream;

@@ -8,7 +8,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import wise.study.prac.mvc.entity.Member;
+import wise.study.prac.biz.entity.Member;
 
 @Getter
 @NoArgsConstructor

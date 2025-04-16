@@ -1,6 +1,6 @@
 package wise.study.prac.security.provider;
 
-import static wise.study.prac.mvc.exception.ErrorCode.UNAUTHORIZED;
+import static wise.study.prac.biz.exception.ErrorCode.UNAUTHORIZED;
 
 import java.util.List;
 import lombok.RequiredArgsConstructor;

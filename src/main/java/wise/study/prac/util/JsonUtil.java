@@ -1,12 +1,12 @@
 package wise.study.prac.util;
 
-import static wise.study.prac.mvc.exception.ErrorCode.JSON_CONVERT;
+import static wise.study.prac.biz.exception.ErrorCode.JSON_CONVERT;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import wise.study.prac.mvc.exception.PracException;
+import wise.study.prac.biz.exception.PracException;
 
 @RequiredArgsConstructor
 public class JsonUtil {

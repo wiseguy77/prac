@@ -12,7 +12,7 @@ import org.slf4j.MDC;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import wise.study.prac.mvc.enums.MdcKeys;
+import wise.study.prac.biz.enums.MdcKeys;
 import wise.study.prac.security.token.LogInAuthToken;
 import wise.study.prac.security.wrapper.RequestWrapper;
 

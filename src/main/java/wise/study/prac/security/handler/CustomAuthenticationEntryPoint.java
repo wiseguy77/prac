@@ -11,8 +11,8 @@ import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.stereotype.Component;
-import wise.study.prac.mvc.dto.CommonResponse;
-import wise.study.prac.mvc.exception.ErrorCode;
+import wise.study.prac.biz.dto.CommonResponse;
+import wise.study.prac.biz.exception.ErrorCode;
 import wise.study.prac.security.exception.PracAuthenticationException;
 
 @Component

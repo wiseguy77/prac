@@ -1,8 +1,8 @@
 package wise.study.prac.security.filter;
 
-import static wise.study.prac.mvc.exception.ErrorCode.JWT_EXPIRED;
-import static wise.study.prac.mvc.exception.ErrorCode.JWT_INVALID;
-import static wise.study.prac.mvc.exception.ErrorCode.UNAUTHORIZED;
+import static wise.study.prac.biz.exception.ErrorCode.JWT_EXPIRED;
+import static wise.study.prac.biz.exception.ErrorCode.JWT_INVALID;
+import static wise.study.prac.biz.exception.ErrorCode.UNAUTHORIZED;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.InvalidClaimException;
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import wise.study.prac.mvc.exception.PracException;
+import wise.study.prac.biz.exception.PracException;
 import wise.study.prac.security.exception.PracAuthenticationException;
 import wise.study.prac.security.token.JwtAuthToken;
 
