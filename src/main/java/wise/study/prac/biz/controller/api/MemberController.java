@@ -16,10 +16,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import wise.study.prac.biz.dto.MemberFilterRequest;
 import wise.study.prac.biz.dto.MemberListResponse;
+import wise.study.prac.biz.dto.MemberRegistrationRequest;
 import wise.study.prac.biz.dto.MemberRequest;
 import wise.study.prac.biz.dto.MemberResponse;
 import wise.study.prac.biz.dto.MemberTeamResponse;
-import wise.study.prac.biz.dto.RegisterMemberRequest;
 import wise.study.prac.biz.service.MemberService;
 import wise.study.prac.biz.service.params.MemberSvcParam;
 import wise.study.prac.security.jwt.JwtUserDetails;
@@ -37,7 +37,7 @@ public class MemberController {
       @ApiResponse(responseCode = "500", description = "회원 등록 실패", content = @Content(mediaType = "application/json", schema = @Schema()))
   })
   @PostMapping()
-  public void register(@RequestBody RegisterMemberRequest request) {
+  public void register(@RequestBody MemberRegistrationRequest request) {
 
     memberService.registerMember(request);
   }
@@ -62,8 +62,7 @@ public class MemberController {
   @GetMapping("/me/with-team")
   public MemberResponse getMeWithTeam(@AuthenticationPrincipal JwtUserDetails user) {
 
-    return memberService.getMemberTeam(MemberRequest.builder()
-        .account(user.getAccount()).build());
+    return memberService.getMemberTeamById(user.getId());
   }
 
   @Operation(summary = "모든 사용자 정보 조회", description = "모든 사용자 정보를 조회합니다.")

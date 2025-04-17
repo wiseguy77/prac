@@ -18,7 +18,7 @@ public class GenericPredicateBuilder {
   }
 
   @SuppressWarnings("unchecked")
-  public <T> BooleanExpression build(Path<T> path, Filter<T> filter) {
+  public <T> BooleanExpression build(Path<T> path, Filter<?> filter) {
 
     if (isNull(filter) || isNull(filter.getValue())) {
       return null;

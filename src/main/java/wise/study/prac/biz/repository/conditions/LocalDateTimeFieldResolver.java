@@ -13,7 +13,7 @@ import java.util.function.BiFunction;
 import wise.study.prac.biz.dto.Filter.MatchType;
 import wise.study.prac.biz.exception.PracException;
 
-public class DateTimeFieldResolver implements FieldResolver<LocalDateTime> {
+public class LocalDateTimeFieldResolver implements FieldResolver<LocalDateTime> {
 
   private static final Map<MatchType, BiFunction<DateTimePath<LocalDateTime>, LocalDateTime, BooleanExpression>> ops = new EnumMap<>(
       MatchType.class);

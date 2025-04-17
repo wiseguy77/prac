@@ -1,5 +1,6 @@
 package wise.study.prac.biz.dto;
 
+import static wise.study.prac.biz.dto.Filter.LogicType.AND;
 import static wise.study.prac.biz.dto.Filter.MatchType.EQUALS;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
@@ -15,6 +16,7 @@ public class Filter<T> {
 
   private T value;
   private MatchType matchType = EQUALS;
+  private LogicType logicType = AND;
 
   public enum MatchType {
 
@@ -33,6 +35,21 @@ public class Filter<T> {
     @JsonCreator
     public static MatchType from(String value) {
       return MatchType.valueOf(value.toUpperCase());
+    }
+
+    @JsonValue
+    public String toValue() {
+      return this.name().toLowerCase();
+    }
+  }
+
+  public enum LogicType {
+    AND,
+    OR;
+
+    @JsonCreator
+    public static LogicType from(String value) {
+      return LogicType.valueOf(value.toUpperCase());
     }
 
     @JsonValue

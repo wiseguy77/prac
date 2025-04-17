@@ -11,13 +11,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wise.study.prac.biz.dto.MemberFilterRequest;
 import wise.study.prac.biz.dto.MemberListResponse;
 import wise.study.prac.biz.dto.MemberResponse;
 import wise.study.prac.biz.dto.MemberTeamResponse;
 import wise.study.prac.biz.entity.Member;
 import wise.study.prac.biz.exception.PracException;
 import wise.study.prac.biz.repository.MemberRepository;
-import wise.study.prac.biz.service.params.MemberSvcFilterParam;
 import wise.study.prac.biz.service.params.MemberSvcParam;
 import wise.study.prac.biz.service.params.RegisterMemberSvcParam;
 import wise.study.prac.security.jwt.JwtUtil;
@@ -63,6 +63,14 @@ public class MemberService {
     return new MemberResponse(member);
   }
 
+  public MemberTeamResponse getMemberTeamById(long id) {
+
+    Member member = memberRepository.findById(id)
+        .orElseThrow(() -> new PracException(USER_NOT_FOUND));
+
+    return new MemberTeamResponse(member);
+  }
+
   public MemberResponse getMemberInfo(MemberSvcParam param) {
     Member member = memberRepository.findMemberByAccount(param.getAccount())
         .orElseThrow(() -> new PracException(USER_NOT_FOUND));
@@ -70,18 +78,11 @@ public class MemberService {
     return new MemberResponse(member);
   }
 
-  public MemberListResponse filterMemberList(MemberSvcFilterParam param) {
+  public MemberListResponse filterMemberList(MemberFilterRequest param) {
 
     List<Member> members = memberRepository.filterMemberList(param);
 
     return new MemberListResponse(members);
-  }
-
-  public MemberTeamResponse getMemberTeam(MemberSvcParam param) {
-    Member member = memberRepository.findMemberByAccount(param.getAccount())
-        .orElseThrow(() -> new PracException(USER_NOT_FOUND));
-
-    return new MemberTeamResponse(member);
   }
 
   public List<MemberTeamResponse> getMemberTeamList(MemberSvcParam svcParam) {
@@ -94,6 +95,4 @@ public class MemberService {
   public MemberListResponse getAllMemberInfo() {
     return new MemberListResponse(memberRepository.findAll());
   }
-
-
 }

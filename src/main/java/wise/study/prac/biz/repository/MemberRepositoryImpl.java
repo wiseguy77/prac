@@ -5,15 +5,18 @@ import static wise.study.prac.biz.repository.conditions.MemberPredicate.emailEq;
 import static wise.study.prac.biz.repository.conditions.MemberPredicate.nameEq;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.Path;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
+import wise.study.prac.biz.dto.Filter;
+import wise.study.prac.biz.dto.Filter.LogicType;
+import wise.study.prac.biz.dto.MemberFilterRequest;
 import wise.study.prac.biz.entity.Member;
 import wise.study.prac.biz.entity.QMember;
 import wise.study.prac.biz.entity.QTeam;
 import wise.study.prac.biz.repository.conditions.GenericPredicateBuilder;
-import wise.study.prac.biz.repository.params.MemberRepoFilterParam;
 import wise.study.prac.biz.repository.params.MemberRepoParam;
 
 @RequiredArgsConstructor
@@ -26,35 +29,45 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
   @Override
   public List<Member> findMemberTeamList(MemberRepoParam repoParam) {
 
-    QTeam team = new QTeam("team");
-    BooleanBuilder where = new BooleanBuilder();
+    QTeam team = QTeam.team;
 
-    where.and(accountEq(repoParam.getAccount()))
+    BooleanBuilder builder = new BooleanBuilder();
+
+    builder.and(accountEq(repoParam.getAccount()))
         .and(nameEq(repoParam.getName()))
         .and(emailEq(repoParam.getEmail()));
 
     return jpaQuery.selectFrom(qMember)
-        .where(where)
+        .where(builder)
         .leftJoin(qMember.team, team)
         .fetchJoin()
         .fetch();
   }
 
   @Override
-  public List<Member> filterMemberList(MemberRepoFilterParam filterParam) {
+  public List<Member> filterMemberList(MemberFilterRequest repoParam) {
 
-    BooleanBuilder where = new BooleanBuilder();
+    BooleanBuilder builder = new BooleanBuilder();
 
-    BooleanExpression account = predicateBuilder.build(qMember.account, filterParam.getAccount());
-    BooleanExpression name = predicateBuilder.build(qMember.name, filterParam.getName());
-    BooleanExpression email = predicateBuilder.build(qMember.email, filterParam.getEmail());
-
-    where.and(account)
-        .and(name)
-        .and(email);
+    buildFilter(builder, qMember.account, repoParam.getAccount());
+    buildFilter(builder, qMember.name, repoParam.getName());
+    buildFilter(builder, qMember.email, repoParam.getEmail());
 
     return jpaQuery.selectFrom(qMember)
-        .where(where)
+        .where(builder)
         .fetch();
+  }
+
+  private void buildFilter(BooleanBuilder builder, Path<?> path, Filter<?> filter) {
+
+    if (Objects.isNull(filter)) {
+      return;
+    }
+
+    if (filter.getLogicType() == LogicType.AND) {
+      builder.and(predicateBuilder.build(path, filter));
+    } else {
+      builder.or(predicateBuilder.build(path, filter));
+    }
   }
 }
