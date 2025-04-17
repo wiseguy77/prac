@@ -57,6 +57,7 @@ public class Member extends BaseEntity implements JwtInfo {
   private String otpCode;
   @Transient
   JwtTokenType jwtTokenType;
+  @Column(columnDefinition = "TIMESTAMP(0)")
   private LocalDateTime otpExpiryTime;
   @Builder.Default
   @Enumerated(EnumType.STRING)
