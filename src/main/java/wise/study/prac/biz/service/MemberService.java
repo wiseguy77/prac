@@ -8,13 +8,17 @@ import static wise.study.prac.biz.exception.ErrorCode.USER_NOT_FOUND;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wise.study.prac.biz.dto.MemberFilterPagingRequest;
 import wise.study.prac.biz.dto.MemberFilterRequest;
 import wise.study.prac.biz.dto.MemberListResponse;
 import wise.study.prac.biz.dto.MemberResponse;
 import wise.study.prac.biz.dto.MemberTeamResponse;
+import wise.study.prac.biz.dto.paging.PageResponse;
 import wise.study.prac.biz.entity.Member;
 import wise.study.prac.biz.exception.PracException;
 import wise.study.prac.biz.repository.MemberRepository;
@@ -83,6 +87,13 @@ public class MemberService {
     List<Member> members = memberRepository.filterMemberList(param);
 
     return new MemberListResponse(members);
+  }
+
+  public PageResponse filterMemberList(MemberFilterPagingRequest param, Pageable pageable) {
+
+    Page<MemberResponse> pageMember = memberRepository.filterMemberList(param, pageable);
+
+    return new PageResponse(pageMember);
   }
 
   public List<MemberTeamResponse> getMemberTeamList(MemberSvcParam svcParam) {

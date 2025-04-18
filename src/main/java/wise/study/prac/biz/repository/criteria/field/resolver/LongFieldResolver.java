@@ -1,4 +1,4 @@
-package wise.study.prac.biz.repository.conditions;
+package wise.study.prac.biz.repository.criteria.field.resolver;
 
 import static wise.study.prac.biz.exception.ErrorCode.ILLEGAL_ARGUMENTS;
 
@@ -13,9 +13,9 @@ import java.util.function.BiFunction;
 import wise.study.prac.biz.dto.Filter.MatchType;
 import wise.study.prac.biz.exception.PracException;
 
-public class IntegerFieldResolver implements FieldResolver<Integer> {
+public class LongFieldResolver implements FieldResolver<Long> {
 
-  private static final Map<MatchType, BiFunction<NumberPath<Integer>, Integer, BooleanExpression>> ops = new EnumMap<>(
+  private static final Map<MatchType, BiFunction<NumberPath<Long>, Long, BooleanExpression>> ops = new EnumMap<>(
       MatchType.class);
 
   static {
@@ -27,9 +27,9 @@ public class IntegerFieldResolver implements FieldResolver<Integer> {
   }
 
   @Override
-  public BooleanExpression resolve(Path<Integer> path, Integer value, MatchType matchType) {
+  public BooleanExpression resolve(Path<Long> path, Long value, MatchType matchType) {
 
-    if (!(path instanceof NumberPath<Integer> numberPath)) {
+    if (!(path instanceof NumberPath<Long> numberPath)) {
       throw new PracException(ILLEGAL_ARGUMENTS);
     }
 

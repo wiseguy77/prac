@@ -1,4 +1,4 @@
-package wise.study.prac.biz.repository.conditions;
+package wise.study.prac.biz.repository.criteria.field.resolver;
 
 import static wise.study.prac.biz.exception.ErrorCode.ILLEGAL_ARGUMENTS;
 
@@ -7,15 +7,16 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberPath;
 import com.querydsl.core.types.dsl.SimpleExpression;
+import java.math.BigDecimal;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import wise.study.prac.biz.dto.Filter.MatchType;
 import wise.study.prac.biz.exception.PracException;
 
-public class LongFieldResolver implements FieldResolver<Long> {
+public class BigDecimalFieldResolver implements FieldResolver<BigDecimal> {
 
-  private static final Map<MatchType, BiFunction<NumberPath<Long>, Long, BooleanExpression>> ops = new EnumMap<>(
+  private static final Map<MatchType, BiFunction<NumberPath<BigDecimal>, BigDecimal, BooleanExpression>> ops = new EnumMap<>(
       MatchType.class);
 
   static {
@@ -27,9 +28,9 @@ public class LongFieldResolver implements FieldResolver<Long> {
   }
 
   @Override
-  public BooleanExpression resolve(Path<Long> path, Long value, MatchType matchType) {
+  public BooleanExpression resolve(Path<BigDecimal> path, BigDecimal value, MatchType matchType) {
 
-    if (!(path instanceof NumberPath<Long> numberPath)) {
+    if (!(path instanceof NumberPath<BigDecimal> numberPath)) {
       throw new PracException(ILLEGAL_ARGUMENTS);
     }
 

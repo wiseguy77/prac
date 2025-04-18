@@ -13,16 +13,17 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class MemberFilterRequest implements FilterRequest {
+public class MemberFilterPagingRequest implements FilterRequest {
 
   Filter<String> account;
+  Filter<Integer> age;
   Filter<String> name;
   Filter<String> email;
 
 
   @Override
   public List<Filter<?>> getFilters() {
-    return Stream.of(account, name, email)
+    return Stream.of(account, age, name, email)
         .filter(Objects::nonNull)
         .collect(Collectors.toList());
   }

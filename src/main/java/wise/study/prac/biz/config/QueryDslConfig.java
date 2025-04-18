@@ -8,14 +8,21 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import wise.study.prac.biz.repository.conditions.BigDecimalFieldResolver;
-import wise.study.prac.biz.repository.conditions.DateFieldResolver;
-import wise.study.prac.biz.repository.conditions.FieldResolverRegistry;
-import wise.study.prac.biz.repository.conditions.GenericPredicateBuilder;
-import wise.study.prac.biz.repository.conditions.IntegerFieldResolver;
-import wise.study.prac.biz.repository.conditions.LocalDateTimeFieldResolver;
-import wise.study.prac.biz.repository.conditions.LongFieldResolver;
-import wise.study.prac.biz.repository.conditions.StringFieldResolver;
+import wise.study.prac.biz.repository.criteria.CriteriaBuilder;
+import wise.study.prac.biz.repository.criteria.field.FieldResolverRegistry;
+import wise.study.prac.biz.repository.criteria.field.resolver.BigDecimalFieldResolver;
+import wise.study.prac.biz.repository.criteria.field.resolver.DateFieldResolver;
+import wise.study.prac.biz.repository.criteria.field.resolver.IntegerFieldResolver;
+import wise.study.prac.biz.repository.criteria.field.resolver.LocalDateTimeFieldResolver;
+import wise.study.prac.biz.repository.criteria.field.resolver.LongFieldResolver;
+import wise.study.prac.biz.repository.criteria.field.resolver.StringFieldResolver;
+import wise.study.prac.biz.repository.criteria.sort.SortResolverRegistry;
+import wise.study.prac.biz.repository.criteria.sort.resolver.BigDecimalSortResolver;
+import wise.study.prac.biz.repository.criteria.sort.resolver.DateSortResolver;
+import wise.study.prac.biz.repository.criteria.sort.resolver.IntegerSortResolver;
+import wise.study.prac.biz.repository.criteria.sort.resolver.LocalDateTimeSortResolver;
+import wise.study.prac.biz.repository.criteria.sort.resolver.LongSortResolver;
+import wise.study.prac.biz.repository.criteria.sort.resolver.StringSortResolver;
 
 @Configuration
 public class QueryDslConfig {
@@ -29,17 +36,26 @@ public class QueryDslConfig {
   }
 
   @Bean
-  GenericPredicateBuilder genericPredicateBuilder() {
+  CriteriaBuilder genericPredicateBuilder() {
 
-    FieldResolverRegistry registry = new FieldResolverRegistry();
+    FieldResolverRegistry fieldResolverRegistry = new FieldResolverRegistry();
 
-    registry.register(String.class, new StringFieldResolver());
-    registry.register(Integer.class, new IntegerFieldResolver());
-    registry.register(Long.class, new LongFieldResolver());
-    registry.register(BigDecimal.class, new BigDecimalFieldResolver());
-    registry.register(Date.class, new DateFieldResolver());
-    registry.register(LocalDateTime.class, new LocalDateTimeFieldResolver());
+    fieldResolverRegistry.register(String.class, new StringFieldResolver());
+    fieldResolverRegistry.register(Integer.class, new IntegerFieldResolver());
+    fieldResolverRegistry.register(Long.class, new LongFieldResolver());
+    fieldResolverRegistry.register(BigDecimal.class, new BigDecimalFieldResolver());
+    fieldResolverRegistry.register(Date.class, new DateFieldResolver());
+    fieldResolverRegistry.register(LocalDateTime.class, new LocalDateTimeFieldResolver());
 
-    return new GenericPredicateBuilder(registry);
+    SortResolverRegistry sortResolverRegistry = new SortResolverRegistry();
+
+    sortResolverRegistry.register(String.class, new StringSortResolver());
+    sortResolverRegistry.register(Integer.class, new IntegerSortResolver());
+    sortResolverRegistry.register(Long.class, new LongSortResolver());
+    sortResolverRegistry.register(BigDecimal.class, new BigDecimalSortResolver());
+    sortResolverRegistry.register(Date.class, new DateSortResolver());
+    sortResolverRegistry.register(LocalDateTime.class, new LocalDateTimeSortResolver());
+
+    return new CriteriaBuilder(fieldResolverRegistry, sortResolverRegistry);
   }
 }

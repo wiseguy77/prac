@@ -14,6 +14,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Filter<T> {
 
+  private String field;
   private T value;
   private MatchType matchType = EQUALS;
   private LogicType logicType = AND;
@@ -56,5 +57,9 @@ public class Filter<T> {
     public String toValue() {
       return this.name().toLowerCase();
     }
+  }
+
+  public boolean isAnd() {
+    return logicType == AND;
   }
 }

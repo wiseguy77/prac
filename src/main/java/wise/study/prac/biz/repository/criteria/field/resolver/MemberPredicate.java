@@ -1,4 +1,4 @@
-package wise.study.prac.biz.repository.conditions;
+package wise.study.prac.biz.repository.criteria.field.resolver;
 
 import com.querydsl.core.types.dsl.BooleanExpression;
 import org.springframework.util.StringUtils;

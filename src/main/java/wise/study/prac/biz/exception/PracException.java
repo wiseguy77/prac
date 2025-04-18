@@ -13,6 +13,11 @@ public class PracException extends RuntimeException {
     this.errorCode = errorCode;
   }
 
+  public PracException(ErrorCode errorCode, String detailMessage) {
+    super(errorCode.getMessage() + ":" + detailMessage);
+    this.errorCode = errorCode;
+  }
+
   public PracException(ErrorCode errorCode, Throwable e) {
     super(errorCode.getMessage(), e);
     this.errorCode = errorCode;

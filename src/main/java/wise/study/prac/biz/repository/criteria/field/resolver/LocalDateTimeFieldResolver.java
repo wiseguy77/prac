@@ -1,4 +1,4 @@
-package wise.study.prac.biz.repository.conditions;
+package wise.study.prac.biz.repository.criteria.field.resolver;
 
 import static wise.study.prac.biz.exception.ErrorCode.ILLEGAL_ARGUMENTS;
 
@@ -6,16 +6,16 @@ import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.DateTimePath;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.BiFunction;
 import wise.study.prac.biz.dto.Filter.MatchType;
 import wise.study.prac.biz.exception.PracException;
 
-public class DateFieldResolver implements FieldResolver<Date> {
+public class LocalDateTimeFieldResolver implements FieldResolver<LocalDateTime> {
 
-  private static final Map<MatchType, BiFunction<DateTimePath<Date>, Date, BooleanExpression>> ops = new EnumMap<>(
+  private static final Map<MatchType, BiFunction<DateTimePath<LocalDateTime>, LocalDateTime, BooleanExpression>> ops = new EnumMap<>(
       MatchType.class);
 
   static {
@@ -27,9 +27,10 @@ public class DateFieldResolver implements FieldResolver<Date> {
   }
 
   @Override
-  public BooleanExpression resolve(Path<Date> path, Date value, MatchType matchType) {
+  public BooleanExpression resolve(Path<LocalDateTime> path, LocalDateTime value,
+      MatchType matchType) {
 
-    if (!(path instanceof DateTimePath<Date> datePath)) {
+    if (!(path instanceof DateTimePath<LocalDateTime> datePath)) {
       throw new PracException(ILLEGAL_ARGUMENTS);
     }
 

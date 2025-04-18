@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,12 +15,14 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import wise.study.prac.biz.dto.MemberFilterPagingRequest;
 import wise.study.prac.biz.dto.MemberFilterRequest;
 import wise.study.prac.biz.dto.MemberListResponse;
 import wise.study.prac.biz.dto.MemberRegistrationRequest;
 import wise.study.prac.biz.dto.MemberRequest;
 import wise.study.prac.biz.dto.MemberResponse;
 import wise.study.prac.biz.dto.MemberTeamResponse;
+import wise.study.prac.biz.dto.paging.PageResponse;
 import wise.study.prac.biz.service.MemberService;
 import wise.study.prac.biz.service.params.MemberSvcParam;
 import wise.study.prac.security.jwt.JwtUserDetails;
@@ -118,5 +121,12 @@ public class MemberController {
   public MemberListResponse filterMember(@RequestBody MemberFilterRequest request) {
 
     return memberService.filterMemberList(request);
+  }
+
+  @PostMapping("/filter-paging")
+  public PageResponse pagingFilterMember(@RequestBody MemberFilterPagingRequest request,
+      Pageable pageable) {
+
+    return memberService.filterMemberList(request, pageable);
   }
 }
