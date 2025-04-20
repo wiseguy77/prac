@@ -5,8 +5,8 @@ import lombok.Data;
 
 @Builder
 @Data
-public class IssuedJwtResponse {
+public class IssuedOtpVo {
 
-  String accessToken;
-  String refreshToken;
+  String account;
+  String otpCode;
 }

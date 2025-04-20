@@ -6,7 +6,7 @@ import wise.study.prac.biz.entity.Member;
 
 @Data
 @NoArgsConstructor
-public class MemberResponse {
+public class MemberVo {
 
   private long id;
   private String name;
@@ -14,7 +14,7 @@ public class MemberResponse {
   private String phoneNumber;
   private String email;
 
-  public MemberResponse(Member member) {
+  public MemberVo(Member member) {
 
     this.setId(member.getId());
     this.setName(member.getName());

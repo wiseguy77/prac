@@ -5,7 +5,7 @@ import wise.study.prac.biz.service.params.RegisterMemberSvcParam;
 import wise.study.prac.security.enums.RoleType;
 
 @Data
-public class MemberRegistrationRequest implements RegisterMemberSvcParam {
+public class MemberRegisterDto implements RegisterMemberSvcParam {
 
   private String account;
   private String password;

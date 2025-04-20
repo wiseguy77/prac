@@ -6,12 +6,12 @@ import wise.study.prac.biz.entity.Member;
 
 @Data
 @EqualsAndHashCode(callSuper = false)
-public class MemberTeamResponse extends MemberResponse {
+public class MemberTeamVo extends MemberVo {
 
   private long teamId;
   private String teamName;
 
-  public MemberTeamResponse(Member member) {
+  public MemberTeamVo(Member member) {
 
     super(member);
 

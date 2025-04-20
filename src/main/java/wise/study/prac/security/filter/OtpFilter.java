@@ -10,7 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import wise.study.prac.biz.dto.MfaRequest;
+import wise.study.prac.biz.dto.MfaDto;
 import wise.study.prac.security.token.OtpAuthToken;
 import wise.study.prac.security.wrapper.RequestWrapper;
 
@@ -27,7 +27,7 @@ public class OtpFilter extends OncePerRequestFilter {
 
     RequestWrapper wrapper = new RequestWrapper(request);
 
-    MfaRequest mfa = objectMapper.readValue(wrapper.getBody(), MfaRequest.class);
+    MfaDto mfa = objectMapper.readValue(wrapper.getBody(), MfaDto.class);
     String account = mfa.getAccount();
     String otpCode = mfa.getOtpCode();
 

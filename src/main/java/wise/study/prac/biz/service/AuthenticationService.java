@@ -14,9 +14,9 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wise.study.prac.biz.dto.IssuedJwtResponse;
-import wise.study.prac.biz.dto.IssuedOtpResponse;
-import wise.study.prac.biz.dto.MfaRequest;
+import wise.study.prac.biz.dto.IssuedJwtVo;
+import wise.study.prac.biz.dto.IssuedOtpVo;
+import wise.study.prac.biz.dto.MfaDto;
 import wise.study.prac.biz.entity.Member;
 import wise.study.prac.biz.exception.ErrorCode;
 import wise.study.prac.biz.exception.PracException;
@@ -43,7 +43,7 @@ public class AuthenticationService {
   private final long refreshTtl = Duration.ofDays(7).toMillis();
 
   @Transactional
-  public IssuedOtpResponse logIn(MfaRequest request) {
+  public IssuedOtpVo logIn(MfaDto request) {
 
     Member member = memberRepository.findMemberByAccount(request.getAccount())
         .orElseThrow(() -> new UsernameNotFoundException("로그인 실패"));
@@ -59,7 +59,7 @@ public class AuthenticationService {
       member.setOtpExpiryTime(otpExpiryTime);
       memberRepository.save(member);
 
-      return IssuedOtpResponse.builder()
+      return IssuedOtpVo.builder()
           .account(member.getAccount())
           .otpCode(sentOtp).build();
     } else {
@@ -74,17 +74,17 @@ public class AuthenticationService {
   }
 
   @Transactional
-  public IssuedJwtResponse reissueJwt(String account) {
+  public IssuedJwtVo reissueJwt(String account) {
 
     JwtAuthToken jwtAuthToken = validateJwt();
-    IssuedJwtResponse response = issueJwt(account);
+    IssuedJwtVo response = issueJwt(account);
     invalidateJwt(jwtAuthToken);
 
     return response;
   }
 
   @Transactional
-  public IssuedJwtResponse issueJwt(String account) {
+  public IssuedJwtVo issueJwt(String account) {
 
     Member member = memberRepository.findMemberByAccount(account)
         .orElseThrow(() -> new PracException(USER_NOT_FOUND));
@@ -99,7 +99,7 @@ public class AuthenticationService {
     jwtRepository.save(issuedAccessInfo);
     jwtRepository.save(issuedRefreshInfo);
 
-    return IssuedJwtResponse.builder()
+    return IssuedJwtVo.builder()
         .accessToken(issuedAccessInfo.getJwt())
         .refreshToken(issuedRefreshInfo.getJwt()).build();
   }
