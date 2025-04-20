@@ -24,13 +24,18 @@ public enum ErrorCode {
   INTERNAL_SERVER_ERROR("INTERNAL_ERROR", "서버 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
   READ_REQUEST_BODY_FAIL("READ_REQUEST_BODY_FAIL", "사용자 요청 객체 정보를 얻는데 실패했습니다.",
       HttpStatus.INTERNAL_SERVER_ERROR),
+  UNSUPPORTED_OPERATION("UNSUPPORTED_OPERATION", "아직 지원하지 않는 기능입니다.",
+      HttpStatus.INTERNAL_SERVER_ERROR),
 
   /**
    * 400
    **/
   ILLEGAL_ARGUMENTS("ILLEGAL_ARGUMENTS", "잘못된 요청 파라미터 보냈습니다.", HttpStatus.BAD_REQUEST),
+
   NO_RESOURCE_FOUND("NO_RESOURCE_FOUND", "요청한 경로를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
+
   INVALID_REQUEST_BODY("INVALID_REQUEST_BODY", "요청 본문이 잘못되었습니다.", HttpStatus.BAD_REQUEST),
+
   BAD_REQUEST("BAD_REQUEST", "잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
 
   private final String code;

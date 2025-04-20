@@ -6,11 +6,13 @@ import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.core.types.dsl.PathBuilder;
 import com.querydsl.core.types.dsl.SimpleExpression;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.BiFunction;
-import wise.study.prac.biz.dto.Filter.MatchType;
+import wise.study.prac.biz.dto.FieldFilter;
+import wise.study.prac.biz.dto.FieldFilter.MatchType;
 import wise.study.prac.biz.exception.PracException;
 
 public class IntegerFieldResolver implements FieldResolver<Integer> {
@@ -35,5 +37,19 @@ public class IntegerFieldResolver implements FieldResolver<Integer> {
 
     return ops.getOrDefault(matchType, SimpleExpression::eq)
         .apply(numberPath, value);
+  }
+
+  @Override
+  public <E> BooleanExpression resolve(Class<E> entityClass, String alias,
+      FieldFilter<?> fieldFilter) {
+
+    PathBuilder<E> builder = new PathBuilder<>(entityClass, alias);
+    NumberPath<Integer> path = builder.getNumber(fieldFilter.getField(), Integer.class);
+
+    if (!(fieldFilter.getValue() instanceof Integer value)) {
+      throw new PracException(ILLEGAL_ARGUMENTS);
+    }
+
+    return ops.getOrDefault(fieldFilter.getMatchType(), NumberPath::eq).apply(path, value);
   }
 }

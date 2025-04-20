@@ -11,8 +11,8 @@ import com.querydsl.core.types.dsl.StringPath;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.BiFunction;
-import wise.study.prac.biz.dto.Filter;
-import wise.study.prac.biz.dto.Filter.MatchType;
+import wise.study.prac.biz.dto.FieldFilter;
+import wise.study.prac.biz.dto.FieldFilter.MatchType;
 import wise.study.prac.biz.exception.PracException;
 
 public class StringFieldResolver implements FieldResolver<String> {
@@ -22,7 +22,8 @@ public class StringFieldResolver implements FieldResolver<String> {
 
   static {
     ops.put(MatchType.EQUALS, SimpleExpression::eq);
-    ops.put(MatchType.CONTAINS, StringExpression::containsIgnoreCase);
+    ops.put(MatchType.CONTAINS, StringExpression::contains);
+    ops.put(MatchType.CONTAINS_IGNORE_CASE, StringExpression::containsIgnoreCase);
     ops.put(MatchType.STARTS_WITH, StringExpression::startsWithIgnoreCase);
     ops.put(MatchType.ENDS_WITH, StringExpression::endsWithIgnoreCase);
   }
@@ -39,19 +40,18 @@ public class StringFieldResolver implements FieldResolver<String> {
   }
 
   @Override
-  public <E> BooleanExpression resolve(Class<E> entityClass, String alias, Filter<?> filter) {
+  public <E> BooleanExpression resolve(Class<E> entityClass, String alias,
+      FieldFilter<?> fieldFilter) {
 
     PathBuilder<E> builder = new PathBuilder<>(entityClass, alias);
-    StringPath path = builder.getString(filter.getField());
+    StringPath path = builder.getString(fieldFilter.getField());
 
-    if (!(filter.getValue() instanceof String value)) {
+    if (!(fieldFilter.getValue() instanceof String value)) {
       throw new PracException(ILLEGAL_ARGUMENTS);
     }
 
-    return ops.getOrDefault(filter.getMatchType(), StringPath::eq).apply(path, value);
+    return ops.getOrDefault(fieldFilter.getMatchType(), StringPath::eq).apply(path, value);
   }
-
-
 }
 
 

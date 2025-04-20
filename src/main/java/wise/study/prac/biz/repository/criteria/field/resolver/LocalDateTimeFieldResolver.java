@@ -6,11 +6,13 @@ import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.DateTimeExpression;
 import com.querydsl.core.types.dsl.DateTimePath;
+import com.querydsl.core.types.dsl.PathBuilder;
 import java.time.LocalDateTime;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.function.BiFunction;
-import wise.study.prac.biz.dto.Filter.MatchType;
+import wise.study.prac.biz.dto.FieldFilter;
+import wise.study.prac.biz.dto.FieldFilter.MatchType;
 import wise.study.prac.biz.exception.PracException;
 
 public class LocalDateTimeFieldResolver implements FieldResolver<LocalDateTime> {
@@ -36,5 +38,20 @@ public class LocalDateTimeFieldResolver implements FieldResolver<LocalDateTime> 
 
     return ops.getOrDefault(matchType, DateTimeExpression::eq)
         .apply(datePath, value);
+  }
+
+  @Override
+  public <E> BooleanExpression resolve(Class<E> entityClass, String alias,
+      FieldFilter<?> fieldFilter) {
+
+    PathBuilder<E> builder = new PathBuilder<>(entityClass, alias);
+    DateTimePath<LocalDateTime> path = builder.getDateTime(fieldFilter.getField(),
+        LocalDateTime.class);
+
+    if (!(fieldFilter.getValue() instanceof LocalDateTime value)) {
+      throw new PracException(ILLEGAL_ARGUMENTS);
+    }
+
+    return ops.getOrDefault(fieldFilter.getMatchType(), DateTimeExpression::gt).apply(path, value);
   }
 }
