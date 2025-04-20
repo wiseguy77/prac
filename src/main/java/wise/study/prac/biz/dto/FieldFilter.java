@@ -1,19 +1,21 @@
 package wise.study.prac.biz.dto;
 
-import static wise.study.prac.biz.dto.Filter.LogicType.AND;
-import static wise.study.prac.biz.dto.Filter.MatchType.EQUALS;
+import static wise.study.prac.biz.dto.FieldFilter.LogicType.AND;
+import static wise.study.prac.biz.dto.FieldFilter.MatchType.EQUALS;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import wise.study.prac.biz.repository.criteria.field.Filter;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Filter<T> {
+public class FieldFilter<T> implements Filter {
 
+  private String type = "field";
   private String field;
   private T value;
   private MatchType matchType = EQUALS;
@@ -26,6 +28,7 @@ public class Filter<T> {
     NOT_EQUALS,
     NOT_EQUALS_IGNORE_CASE,
     CONTAINS,
+    CONTAINS_IGNORE_CASE,
     STARTS_WITH,
     ENDS_WITH,
     GREATER_THAN,

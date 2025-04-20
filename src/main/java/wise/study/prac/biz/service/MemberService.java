@@ -13,6 +13,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import wise.study.prac.biz.dto.FilterGroupRequest;
 import wise.study.prac.biz.dto.MemberFilterPagingRequest;
 import wise.study.prac.biz.dto.MemberFilterRequest;
 import wise.study.prac.biz.dto.MemberListResponse;
@@ -87,6 +88,13 @@ public class MemberService {
     List<Member> members = memberRepository.filterMemberList(param);
 
     return new MemberListResponse(members);
+  }
+
+  public PageResponse filterMemberList(FilterGroupRequest param, Pageable pageable) {
+
+    Page<MemberResponse> pageMember = memberRepository.filterMemberList(param, pageable);
+
+    return new PageResponse(pageMember);
   }
 
   public PageResponse filterMemberList(MemberFilterPagingRequest param, Pageable pageable) {

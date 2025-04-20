@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import wise.study.prac.biz.dto.FilterGroupRequest;
 import wise.study.prac.biz.dto.MemberFilterPagingRequest;
 import wise.study.prac.biz.dto.MemberFilterRequest;
 import wise.study.prac.biz.dto.MemberListResponse;
@@ -121,6 +122,18 @@ public class MemberController {
   public MemberListResponse filterMember(@RequestBody MemberFilterRequest request) {
 
     return memberService.filterMemberList(request);
+  }
+
+  @Operation(summary = "그룹 조건으로 사용자와 팀 정보 조회", description = "그룹 조건으로 사용자와 팀 정보를 함께 조회합니다.")
+  @ApiResponses(value = {
+      @ApiResponse(responseCode = "200", description = "그룹 조건으로 사용자와 팀 정보 조회 성공", content = @Content(mediaType = "application/json", schema = @Schema(implementation = MemberTeamResponse.class))),
+      @ApiResponse(responseCode = "500", description = "그룹 조건으로 사용자와 팀 정보 조회 실패", content = @Content(mediaType = "application/json", schema = @Schema()))
+  })
+  @PostMapping("/filter-group-paging")
+  public PageResponse pagingFilterGroupMember(@RequestBody FilterGroupRequest request,
+      Pageable pageable) {
+
+    return memberService.filterMemberList(request, pageable);
   }
 
   @PostMapping("/filter-paging")

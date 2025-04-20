@@ -1,19 +1,19 @@
 package wise.study.prac.biz.repository.criteria;
 
 import static java.util.Objects.isNull;
-import static wise.study.prac.biz.dto.Filter.MatchType.EQUALS;
+import static wise.study.prac.biz.dto.GroupFilter.LogicType.AND;
+import static wise.study.prac.biz.exception.ErrorCode.ILLEGAL_ARGUMENTS;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.PathBuilder;
 import java.lang.reflect.Field;
-import java.util.Optional;
 import org.springframework.data.domain.Sort;
-import wise.study.prac.biz.dto.Filter;
-import wise.study.prac.biz.dto.Filter.MatchType;
-import wise.study.prac.biz.exception.ErrorCode;
+import wise.study.prac.biz.dto.FieldFilter;
+import wise.study.prac.biz.dto.GroupFilter;
 import wise.study.prac.biz.exception.PracException;
 import wise.study.prac.biz.repository.criteria.field.FieldResolverRegistry;
+import wise.study.prac.biz.repository.criteria.field.Filter;
 import wise.study.prac.biz.repository.criteria.field.resolver.FieldResolver;
 import wise.study.prac.biz.repository.criteria.sort.SortResolverRegistry;
 import wise.study.prac.biz.repository.criteria.sort.resolver.SortResolver;
@@ -29,20 +29,51 @@ public class CriteriaBuilder {
     this.sortResolverRegistry = sortResolverRegistry;
   }
 
+  public <E> BooleanExpression buildGroupFilter(Class<E> entityClass, String alias, Filter filter) {
+
+    BooleanExpression result = null;
+
+    if (filter instanceof GroupFilter groupFilter) {
+      for (Filter childFilter : groupFilter.getFilters()) {
+
+        BooleanExpression builtFilter = buildGroupFilter(entityClass, alias, childFilter);
+
+        if (builtFilter == null) {
+          continue;
+        }
+
+        if (result == null) {
+          result = builtFilter;
+        } else {
+          result = groupFilter.getLogicType() == AND ?
+              result.and(builtFilter) : result.or(builtFilter);
+        }
+      }
+      return result;
+    } else if (filter instanceof FieldFilter<?> fieldFilter) {
+      return buildField(entityClass, alias, fieldFilter);
+    } else {
+      throw new PracException(ILLEGAL_ARGUMENTS, "잘못된 형식의 검색 조건입니다.");
+    }
+
+//    return result;
+  }
+
+
   @SuppressWarnings("unchecked")
   public <E> BooleanExpression buildField(Class<E> entityClass, String alias, /*Path<T> path, */
-      Filter<?> filter) {
+      FieldFilter<?> fieldFilter) {
 
-    if (isNull(filter) || isNull(filter.getValue())) {
+    if (isNull(fieldFilter) || isNull(fieldFilter.getValue())) {
       return null;
     }
 
-    if (isNull(filter.getField())) {
-      throw new PracException(ErrorCode.ILLEGAL_ARGUMENTS, "검색 조건 필드명 누락");
+    if (isNull(fieldFilter.getField())) {
+      throw new PracException(ILLEGAL_ARGUMENTS, "검색 조건 필드명 누락");
     }
 
-    Object value = filter.getValue();
-    MatchType matchType = Optional.ofNullable(filter.getMatchType()).orElse(EQUALS);
+    Object value = fieldFilter.getValue();
+//    MatchType matchType = Optional.ofNullable(fieldFilter.getMatchType()).orElse(EQUALS);
 
     FieldResolver<Object> resolver = (FieldResolver<Object>) resolverRegistry.getResolver(
         value.getClass());
@@ -51,7 +82,7 @@ public class CriteriaBuilder {
       return null;
     }
 
-    return resolver.resolve(entityClass, alias, filter);
+    return resolver.resolve(entityClass, alias, fieldFilter);
   }
 
   public <E> OrderSpecifier<?> buildSort(Class<E> entityClass, String alias, Sort.Order order) {

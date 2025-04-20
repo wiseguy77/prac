@@ -15,14 +15,14 @@ import lombok.NoArgsConstructor;
 @Builder
 public class MemberFilterPagingRequest implements FilterRequest {
 
-  Filter<String> account;
-  Filter<Integer> age;
-  Filter<String> name;
-  Filter<String> email;
+  FieldFilter<String> account;
+  FieldFilter<Integer> age;
+  FieldFilter<String> name;
+  FieldFilter<String> email;
 
 
   @Override
-  public List<Filter<?>> getFilters() {
+  public List<FieldFilter<?>> getFilters() {
     return Stream.of(account, age, name, email)
         .filter(Objects::nonNull)
         .collect(Collectors.toList());

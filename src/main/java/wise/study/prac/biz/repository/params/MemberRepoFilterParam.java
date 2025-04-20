@@ -1,12 +1,12 @@
 package wise.study.prac.biz.repository.params;
 
-import wise.study.prac.biz.dto.Filter;
+import wise.study.prac.biz.dto.FieldFilter;
 
 public interface MemberRepoFilterParam {
 
-  Filter<String> getAccount();
+  FieldFilter<String> getAccount();
 
-  Filter<String> getName();
+  FieldFilter<String> getName();
 
-  Filter<String> getEmail();
+  FieldFilter<String> getEmail();
 }
