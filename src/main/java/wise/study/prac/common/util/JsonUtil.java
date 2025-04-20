@@ -1,4 +1,4 @@
-package wise.study.prac.util;
+package wise.study.prac.common.util;
 
 import static wise.study.prac.biz.exception.ErrorCode.JSON_CONVERT;
 

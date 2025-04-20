@@ -9,10 +9,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Repository;
 import wise.study.prac.biz.exception.PracException;
+import wise.study.prac.common.util.JsonUtil;
 import wise.study.prac.security.jwt.JwtIssuedInfo;
 import wise.study.prac.security.jwt.JwtUserDetails;
 import wise.study.prac.security.jwt.JwtUtil;
-import wise.study.prac.util.JsonUtil;
 
 @Repository
 @RequiredArgsConstructor

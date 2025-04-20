@@ -11,7 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.MDC;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import wise.study.prac.util.AuditUtil;
+import wise.study.prac.common.util.AuditUtil;
 
 @Slf4j
 public class CleanUpFilter extends OncePerRequestFilter {

@@ -5,7 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import wise.study.prac.util.JsonUtil;
+import wise.study.prac.common.util.JsonUtil;
 
 @Configuration
 public class ProjectConfig {

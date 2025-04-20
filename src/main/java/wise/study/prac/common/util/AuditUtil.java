@@ -1,4 +1,4 @@
-package wise.study.prac.util;
+package wise.study.prac.common.util;
 
 import jakarta.servlet.http.HttpServletRequest;
 
