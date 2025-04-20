@@ -13,12 +13,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import wise.study.prac.biz.dto.FilterGroupRequest;
-import wise.study.prac.biz.dto.MemberFilterPagingRequest;
-import wise.study.prac.biz.dto.MemberFilterRequest;
-import wise.study.prac.biz.dto.MemberListResponse;
-import wise.study.prac.biz.dto.MemberResponse;
-import wise.study.prac.biz.dto.MemberTeamResponse;
+import wise.study.prac.biz.dto.MemberDto;
+import wise.study.prac.biz.dto.MemberFilterDto;
+import wise.study.prac.biz.dto.MemberListVo;
+import wise.study.prac.biz.dto.MemberTeamVo;
+import wise.study.prac.biz.dto.MemberVo;
+import wise.study.prac.biz.dto.SearchGroupDto;
 import wise.study.prac.biz.dto.paging.PageResponse;
 import wise.study.prac.biz.entity.Member;
 import wise.study.prac.biz.exception.PracException;
@@ -60,58 +60,60 @@ public class MemberService {
     }
   }
 
-  public MemberResponse getMemberById(long id) {
+  public MemberVo getMemberById(long id) {
 
     Member member = memberRepository.findById(id)
         .orElseThrow(() -> new PracException(USER_NOT_FOUND));
 
-    return new MemberResponse(member);
+    return new MemberVo(member);
   }
 
-  public MemberTeamResponse getMemberTeamById(long id) {
+  public MemberTeamVo getMemberTeamById(long id) {
 
     Member member = memberRepository.findById(id)
         .orElseThrow(() -> new PracException(USER_NOT_FOUND));
 
-    return new MemberTeamResponse(member);
+    return new MemberTeamVo(member);
   }
 
-  public MemberResponse getMemberInfo(MemberSvcParam param) {
+  public MemberVo getMemberInfo(MemberSvcParam param) {
     Member member = memberRepository.findMemberByAccount(param.getAccount())
         .orElseThrow(() -> new PracException(USER_NOT_FOUND));
 
-    return new MemberResponse(member);
+    return new MemberVo(member);
   }
 
-  public MemberListResponse filterMemberList(MemberFilterRequest param) {
+  public MemberListVo filterMemberList(MemberFilterDto param) {
 
-    List<Member> members = memberRepository.filterMemberList(param);
+    List<Member> members = memberRepository.filterMemberList(param.toGroupFilterDto());
 
-    return new MemberListResponse(members);
+    return new MemberListVo(members);
   }
 
-  public PageResponse filterMemberList(FilterGroupRequest param, Pageable pageable) {
+  public PageResponse filterMemberList(MemberFilterDto param, Pageable pageable) {
 
-    Page<MemberResponse> pageMember = memberRepository.filterMemberList(param, pageable);
+    Page<MemberVo> pageMember = memberRepository.pagingMemberList(param.toGroupFilterDto(),
+        pageable);
 
     return new PageResponse(pageMember);
   }
 
-  public PageResponse filterMemberList(MemberFilterPagingRequest param, Pageable pageable) {
+  public PageResponse filterMemberList(SearchGroupDto param, Pageable pageable) {
 
-    Page<MemberResponse> pageMember = memberRepository.filterMemberList(param, pageable);
+    Page<MemberVo> pageMember = memberRepository.pagingMemberList(param, pageable);
 
     return new PageResponse(pageMember);
   }
 
-  public List<MemberTeamResponse> getMemberTeamList(MemberSvcParam svcParam) {
 
-    List<Member> members = memberRepository.findMemberTeamList(svcParam);
+  public List<MemberTeamVo> getMemberTeamList(MemberDto memberDto) {
 
-    return members.stream().map(MemberTeamResponse::new).toList();
+    List<Member> members = memberRepository.findMemberTeamList(memberDto);
+
+    return members.stream().map(MemberTeamVo::new).toList();
   }
 
-  public MemberListResponse getAllMemberInfo() {
-    return new MemberListResponse(memberRepository.findAll());
+  public MemberListVo getAllMemberInfo() {
+    return new MemberListVo(memberRepository.findAll());
   }
 }

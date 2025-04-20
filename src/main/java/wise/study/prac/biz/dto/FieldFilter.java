@@ -1,25 +1,32 @@
 package wise.study.prac.biz.dto;
 
-import static wise.study.prac.biz.dto.FieldFilter.LogicType.AND;
 import static wise.study.prac.biz.dto.FieldFilter.MatchType.EQUALS;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;
+import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import wise.study.prac.biz.repository.criteria.field.Filter;
 
+@Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class FieldFilter<T> implements Filter {
 
+  @Schema(example = "group 또는 field")
+  @Builder.Default
   private String type = "field";
+  @Schema(example = "name", description = "필드명")
   private String field;
+  @Schema(example = "홍길동")
   private T value;
+  @Builder.Default
   private MatchType matchType = EQUALS;
-  private LogicType logicType = AND;
+//  private LogicType logicType = AND;
 
   public enum MatchType {
 
@@ -60,9 +67,5 @@ public class FieldFilter<T> implements Filter {
     public String toValue() {
       return this.name().toLowerCase();
     }
-  }
-
-  public boolean isAnd() {
-    return logicType == AND;
   }
 }

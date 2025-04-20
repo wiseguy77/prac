@@ -16,17 +16,14 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import wise.study.prac.biz.dto.FieldFilter;
-import wise.study.prac.biz.dto.FilterGroupRequest;
-import wise.study.prac.biz.dto.MemberFilterPagingRequest;
-import wise.study.prac.biz.dto.MemberFilterRequest;
-import wise.study.prac.biz.dto.MemberResponse;
+import wise.study.prac.biz.dto.GroupFilterDto;
+import wise.study.prac.biz.dto.MemberDto;
+import wise.study.prac.biz.dto.MemberVo;
 import wise.study.prac.biz.entity.Member;
 import wise.study.prac.biz.entity.QMember;
 import wise.study.prac.biz.entity.QTeam;
 import wise.study.prac.biz.repository.criteria.CriteriaBuilder;
 import wise.study.prac.biz.repository.criteria.field.Filter;
-import wise.study.prac.biz.repository.params.MemberRepoParam;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -37,7 +34,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
   private final CriteriaBuilder criteriaBuilder;
 
   @Override
-  public List<Member> findMemberTeamList(MemberRepoParam repoParam) {
+  public List<Member> findMemberTeamList(MemberDto repoParam) {
 
     QTeam team = QTeam.team;
 
@@ -55,20 +52,15 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
   }
 
   @Override
-  public List<Member> filterMemberList(MemberFilterRequest filterParam) {
+  public List<Member> filterMemberList(GroupFilterDto groupFilter) {
 
     String alias = "member_filter";
     QMember fMember = new QMember(alias);
     BooleanBuilder builder = new BooleanBuilder();
 
     // TODO : domain 정보를 기준으로 필터를 생성할 수 있도록 구현
-    for (FieldFilter<?> fieldFilter : filterParam.getFilters()) {
-      if (fieldFilter.isAnd()) {
-        builder.and(criteriaBuilder.buildField(Member.class, alias, fieldFilter));
-      } else {
-        builder.or(criteriaBuilder.buildField(Member.class, alias, fieldFilter));
-      }
-    }
+    Filter filter = groupFilter.getGroupFilter();
+    criteriaBuilder.buildGroupFilter(Member.class, alias, filter);
 
     return jpaQuery.selectFrom(fMember)
         .where(builder)
@@ -76,15 +68,14 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
   }
 
   @Override
-  public Page<MemberResponse> filterMemberList(FilterGroupRequest filterGroupRequest,
-      Pageable pageable) {
+  public Page<MemberVo> pagingMemberList(GroupFilterDto groupFilterDto, Pageable pageable) {
 
     String alias = "member_filter";
     QMember fMember = new QMember(alias);
     BooleanBuilder builder = new BooleanBuilder();
 
     // TODO : domain 정보를 기준으로 필터를 생성할 수 있도록 구현
-    Filter filter = filterGroupRequest.getFilter();
+    Filter filter = groupFilterDto.getGroupFilter();
     builder.and(criteriaBuilder.buildGroupFilter(Member.class, alias, filter));
 
     List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
@@ -102,44 +93,7 @@ public class MemberRepositoryImpl implements MemberRepositoryCustom {
 
     long total = query.fetchCount();
 
-    List<MemberResponse> members = query.fetch().stream().map(MemberResponse::new).toList();
-
-    return new PageImpl<>(members, pageable, total);
-  }
-
-  @Override
-  public Page<MemberResponse> filterMemberList(MemberFilterPagingRequest filterParam,
-      Pageable pageable) {
-
-    String alias = "member_filter";
-    QMember fMember = new QMember(alias);
-    BooleanBuilder builder = new BooleanBuilder();
-    List<OrderSpecifier<?>> orderSpecifiers = new ArrayList<>();
-
-    // TODO : domain 정보를 기준으로 필터를 생성할 수 있도록 구현
-    for (FieldFilter<?> fieldFilter : filterParam.getFilters()) {
-      if (fieldFilter.isAnd()) {
-        builder.and(criteriaBuilder.buildField(Member.class, alias, fieldFilter));
-      } else {
-        builder.or(criteriaBuilder.buildField(Member.class, alias, fieldFilter));
-      }
-    }
-
-    if (pageable.getSort().isSorted()) {
-      for (Sort.Order order : pageable.getSort()) {
-        orderSpecifiers.add(criteriaBuilder.buildSort(Member.class, alias, order));
-      }
-    }
-
-    JPAQuery<Member> query = jpaQuery.selectFrom(fMember)
-        .where(builder)
-        .orderBy(orderSpecifiers.toArray(new OrderSpecifier[0]))
-        .offset(pageable.getOffset())
-        .limit(pageable.getPageSize());
-
-    long total = query.fetchCount();
-
-    List<MemberResponse> members = query.fetch().stream().map(MemberResponse::new).toList();
+    List<MemberVo> members = query.fetch().stream().map(MemberVo::new).toList();
 
     return new PageImpl<>(members, pageable, total);
   }

@@ -1,6 +1,5 @@
 package wise.study.prac.biz.dto;
 
-import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,17 +10,17 @@ import wise.study.prac.biz.repository.criteria.field.Filter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class FilterGroupRequest implements FilterRequest {
+public class SearchGroupDto implements GroupFilterDto {
 
   Filter groupFilter;
 
-  @Override
-  public List<FieldFilter<?>> getFilters() {
-    return List.of();
-  }
+//  @Override
+//  public List<Filter> getFilters() {
+//    return List.of();
+//  }
 
-  @Override
-  public Filter getFilter() {
-    return groupFilter;
-  }
+//  @Override
+//  public Filter getGroupFilter() {
+//    return groupFilter;
+//  }
 }
