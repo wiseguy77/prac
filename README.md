@@ -27,13 +27,17 @@
 
 # 🔧 기술 스택
 
-- **Spring Boot 3.4.4**
-- **Spring Security** + **Login, OTP, JWT 인증 시스템**
-- **Spring Data JPA**
-- **QueryDSL 6.1.1** (커스텀 Repository 추상화)
-- **Redis (인메모리)**
-- **H2 Database** (로컬 개발용)
-
+- ![Java](https://img.shields.io/badge/Java-17-orange?logo=java)
+  ![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.4.4-brightgreen?logo=springboot)
+  ![Spring Security](https://img.shields.io/badge/Spring%20Security-6.4.4-brightgreen?logo=springsecurity)
+  ![Spring Data](https://img.shields.io/badge/Spring%20Data-3.4.4-brightgreen?logo=spring&logoColor=white)
+  ![QueryDSL](https://img.shields.io/badge/QueryDSL-6.1.1-blue)
+  ![H2 Database](https://img.shields.io/badge/H2%20DB-in--memory-lightgrey?logo=H2%20database)
+  ![Redis](https://img.shields.io/badge/Redis-in--memory-red?logo=redis)
+  ![Logback](https://img.shields.io/badge/Logback-1.5.18-pink)
+  ![OpenApi](https://img.shields.io/badge/OpenApi-doc-purple?logo=openapiinitiative)
+  ![Maven](https://img.shields.io/badge/Maven-build-blue?logo=apachemaven)
+  ![License](https://img.shields.io/badge/license-MIT-green)
 ---
 
 # 🌱 향후 예정 작업
