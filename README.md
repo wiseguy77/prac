@@ -32,8 +32,8 @@
   ![Spring Security](https://img.shields.io/badge/Spring%20Security-6.4.4-brightgreen?logo=springsecurity)
   ![Spring Data](https://img.shields.io/badge/Spring%20Data-3.4.4-brightgreen?logo=spring&logoColor=white)
   ![QueryDSL](https://img.shields.io/badge/QueryDSL-6.1.1-blue)
-  ![H2 Database](https://img.shields.io/badge/H2%20DB-in--memory-lightgrey?logo=H2%20database)
-  ![Redis](https://img.shields.io/badge/Redis-in--memory-red?logo=redis)
+  ![H2 Database](https://img.shields.io/badge/H2%20DB%20in%20memory-2.3.232-lightgrey?logo=H2%20database)
+  ![Redis](https://img.shields.io/badge/Redis%20in%20memory-0.7.3-red?logo=redis)
   ![Logback](https://img.shields.io/badge/Logback-1.5.18-pink)
   ![OpenApi](https://img.shields.io/badge/OpenApi-doc-purple?logo=openapiinitiative)
   ![Maven](https://img.shields.io/badge/Maven-build-blue?logo=apachemaven)
@@ -47,7 +47,12 @@
 - 테스트 코드 작성 : MockMvc + 통합 테스트
 - 인증 흐름 시퀀스 다이어그램 작성 및 문서화
 - 다국어 지원(메시지 리소스)
-- **dockerfile 이미지 생성과 docker-compose 실행환경 구성**
+- dockerfile 이미지 생성과 docker-compose 실행환경 구성
+- MSA 도입
+    * 멀티 프로젝트 구성(인증 및 각 서비스 빈 프로젝트로 분리)
+    * 인증모듈 라이브러리
+    * Kafka docker-compose 실행환경 구성
+    * Kafka listener 등록 및 테스트
 
 ---
 
@@ -59,10 +64,97 @@
 <summary><span style="font-size:15px">자세히</span></summary>
 
 - CommonResponse 응답 객체 정의
+- ErrorCode 정의: 클라이언트와 서버에러 구분 및 HttpStatus 매핑
 - AOP-like GlobalResponseAdvice 핸들러 구현(완료)
 - AOP-like GlobalExceptionAdvice 핸들러 구현(완료)
-- ErrorCode 정의: 클라이언트와 서버에러 구분 및 HttpStatus 매핑
 
+### 📄 CommonResponse.java
+
+```java
+
+@Getter
+public class CommonResponse<T> {
+
+  private final boolean success;
+  private final String code;
+  private final String message;
+  private final T data;
+  private final Integer status;
+  private final LocalDateTime timestamp;
+
+  public CommonResponse(boolean success, String code, String message, T data, Integer status) {
+    this.success = success;
+    this.code = code;
+    this.message = message;
+    this.data = data;
+    this.status = status;
+    this.timestamp = LocalDateTime.now();
+  }
+
+  public static <T> CommonResponse<T> success(T data) {
+    return new CommonResponse<>(true, "SUCCESS", "요청이 성공했습니다.", data, HttpStatus.OK.value());
+  }
+
+  public static CommonResponse<?> fail(ErrorCode errorCode) {
+    return new CommonResponse<>(false,
+        errorCode.getCode(),
+        errorCode.getMessage(),
+        null,
+        errorCode.getHttpStatus().value());
+  }
+}
+```
+
+### 📄 ErrorCode.java
+
+```java
+
+@Getter
+public enum ErrorCode {
+  /**
+   * 500
+   **/
+  REGISTER_MEMBER_FAIL("REGISTER_MEMBER_FAIL", "사용자 가입에 실패햇습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+  KEY_GENERATION_FAIL("KEY_GENERATION_FAIL", "개인 서명 키 생성에 실패했습니다.",
+      HttpStatus.INTERNAL_SERVER_ERROR),
+  PASSWORD_ENCRYPTION_FAIL("PASSWORD_ENCRYPTION_FAIL", "비밀번호 암호화에 실패했습니다.",
+      HttpStatus.INTERNAL_SERVER_ERROR),
+  USER_NOT_FOUND("USER_NOT_FOUND", "사용자를 찾을 수 없습니다.", HttpStatus.NOT_FOUND),
+  USER_INACTIVE_STATUS("USER_INACTIVE", "사용자 계정가 비활성화 상태입니다.", HttpStatus.UNAUTHORIZED),
+  JWT_EXPIRED("JWT_EXPIRED", "토큰 기간이 만료되었습니다.", HttpStatus.UNAUTHORIZED),
+  JWT_INVALID("JWT_INVALID", "토큰 형식이 잘못되었습니다.", HttpStatus.UNAUTHORIZED),
+  JWT_MISSING("JWT_MISSING", "토큰 정보를 찾을 수 없습니다.", HttpStatus.UNAUTHORIZED),
+  UNAUTHORIZED("UNAUTHORIZED", "인증에 실패했습니다.", HttpStatus.UNAUTHORIZED),
+  ACCESS_DENIED("ACCESS_DENIED", "접근 권한이 없습니다.", HttpStatus.FORBIDDEN),
+  JSON_CONVERT("JSON_CONVERT_ERROR", "JSON (역)직렬화에 실패했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+  INTERNAL_SERVER_ERROR("INTERNAL_ERROR", "서버 오류가 발생했습니다.", HttpStatus.INTERNAL_SERVER_ERROR),
+  READ_REQUEST_BODY_FAIL("READ_REQUEST_BODY_FAIL", "사용자 요청 객체 정보를 얻는데 실패했습니다.",
+      HttpStatus.INTERNAL_SERVER_ERROR),
+  UNSUPPORTED_OPERATION("UNSUPPORTED_OPERATION", "아직 지원하지 않는 기능입니다.",
+      HttpStatus.INTERNAL_SERVER_ERROR),
+
+  /**
+   * 400
+   **/
+  ILLEGAL_ARGUMENTS("ILLEGAL_ARGUMENTS", "잘못된 요청 파라미터 보냈습니다.", HttpStatus.BAD_REQUEST),
+
+  NO_RESOURCE_FOUND("NO_RESOURCE_FOUND", "요청한 경로를 찾을 수 없습니다", HttpStatus.NOT_FOUND),
+
+  INVALID_REQUEST_BODY("INVALID_REQUEST_BODY", "요청 본문이 잘못되었습니다.", HttpStatus.BAD_REQUEST),
+
+  BAD_REQUEST("BAD_REQUEST", "잘못된 요청입니다.", HttpStatus.BAD_REQUEST);
+
+  private final String code;
+  private final String message;
+  private final HttpStatus httpStatus;
+
+  ErrorCode(String code, String message, HttpStatus httpStatus) {
+    this.code = code;
+    this.message = message;
+    this.httpStatus = httpStatus;
+  }
+}
+```
 ### 📄 GlobalResponseAdvice.java
 
 ```java
@@ -164,7 +256,6 @@ public class GlobalExceptionAdvice {
   }
 }
 ```
-
 </details>
 
 ## 2. 로깅(완료)
@@ -172,12 +263,86 @@ public class GlobalExceptionAdvice {
 <details>
 <summary><span style="font-size:15px">자세히</span></summary>
 
-- logback을 사용합니다.
+- Filter에서 ServletRequest 로깅을 위한 커스텀 래퍼 객체를 정의합니다.
 - 요청별로 로깅에 필요한 데이터를 대비해 MDC(Mapped Diagnostic Context)를 준비합니다.
-- Thread Local MDC 보안을 강화하기 위해 스프링 시큐리티에 CleanUpFilter를 추가해 리셋합니다.
+- 보안을 강화하기 위해 추가한 CleanUpFilter 에서 MDC, Spring Security Context 에서 사용한 Thread Local 내용을 리셋합니다.
+-
 
+### 📄 RequestWrapper.java
+
+```java
+public class RequestWrapper extends HttpServletRequestWrapper {
+
+  private byte[] cachedBodyBytes;
+  private String cachedBodyString = "";
+
+  public RequestWrapper(HttpServletRequest request) {
+    super(request);
+
+    cacheRequestBody(request);
+  }
+
+  @Override
+  public ServletInputStream getInputStream() {
+    final ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(cachedBodyBytes);
+    return new ServletInputStream() {
+      @Override
+      public boolean isFinished() {
+        return byteArrayInputStream.available() == 0;
+      }
+
+      @Override
+      public boolean isReady() {
+        return true;
+      }
+
+      @Override
+      public void setReadListener(ReadListener readListener) {
+        throw new PracAuthenticationException(READ_REQUEST_BODY_FAIL);
+      }
+
+      public int read() {
+        return byteArrayInputStream.read();
+      }
+    };
+  }
+
+  @Override
+  public BufferedReader getReader() {
+    return new BufferedReader(new InputStreamReader(this.getInputStream()));
+  }
+
+  private void cacheRequestBody(HttpServletRequest request) {
+
+    String contentType = request.getContentType();
+
+    try {
+      if (StringUtils.equalsIgnoreCase(contentType, MediaType.APPLICATION_FORM_URLENCODED_VALUE)) {
+        request.getParameterMap();
+        this.cachedBodyBytes = new byte[0];
+      } else {
+        cachedBodyBytes = StreamUtils.copyToByteArray(request.getInputStream());
+      }
+    } catch (IOException e) {
+      throw new PracAuthenticationException(READ_REQUEST_BODY_FAIL, e);
+    }
+  }
+
+  public String getBody() {
+
+    if (Objects.isNull(cachedBodyBytes) || cachedBodyBytes.length == 0) {
+      return "";
+    }
+
+    if (!Objects.isNull(cachedBodyString)) {
+      this.cachedBodyString = new String(this.cachedBodyBytes, UTF_8);
+    }
+
+    return this.cachedBodyString;
+  }
+}
+```
 ### 📄 CleanUpFilter.java
-
 ```java
 
 @Slf4j
